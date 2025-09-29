@@ -18,7 +18,6 @@ export default function OfertaDescripcion({ ofertaId, onClose }) {
         setLoading(false);
       }
     };
-
     fetchDescripcion();
   }, [ofertaId]);
 
@@ -26,26 +25,28 @@ export default function OfertaDescripcion({ ofertaId, onClose }) {
 
   return (
     <div style={{
-      position: "absolute",
+      position: "fixed",
+      top: "100px",
+      left: "50%",
+      transform: "translateX(-50%)",
+      width: "600px",
+      maxHeight: "400px",
+      overflowY: "auto",
       background: "#222",
       color: "#fff",
       border: "1px solid #444",
       borderRadius: "8px",
-      padding: "15px",
-      width: "300px",
-      top: "100%",
-      left: "0",
-      zIndex: 1000,
-      boxShadow: "0 2px 10px rgba(0,0,0,0.5)"
+      padding: "20px",
+      zIndex: 9999,
+      boxShadow: "0 4px 20px rgba(0,0,0,0.7)"
     }}>
       {loading ? (
         <p>Cargando...</p>
       ) : (
         <>
-          <h4>Descripción</h4>
           <p>{descripcion}</p>
           <button onClick={onClose} style={{
-            marginTop: "10px",
+            marginTop: "15px",
             padding: "5px 10px",
             fontSize: "14px",
             cursor: "pointer"

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { FaExternalLinkAlt, FaCopy, FaCalendarAlt, FaSortAmountDown } from "react-icons/fa";
-import OfertaDescripcion from "./OfertaDescripcion"; // El componente que creamos
+import OfertaDescripcion from "./OfertaDescripcion";
 import "../App.css";
 
 export default function Analisis() {
@@ -45,7 +45,11 @@ export default function Analisis() {
 
       <div className="cards">
         {ofertas.map(o => (
-          <div key={o.id} className="card" style={{ position: "relative" }}>
+          <div 
+            key={o.id} 
+            className={`card ${detalleId === o.oferta_id ? "open" : ""}`} 
+            style={{ position: "relative", pointerEvents: detalleId === o.oferta_id ? "none" : "auto" }}
+          >
             <h2>{o.cargo}</h2>
             <p><strong>Ciudad:</strong> {o.ciudad}</p>
             <p><strong>Compatibilidad:</strong> {o.compatibilidad || 0}</p>
@@ -54,21 +58,21 @@ export default function Analisis() {
             <div className="card-buttons">
               <button onClick={() => handleGoTo(o.url)} disabled={!o.url}><FaExternalLinkAlt /> Ir</button>
               <button onClick={() => handleCopy(o.url)} disabled={!o.url}><FaCopy /> Copiar</button>
-              <button onClick={() => setDetalleId(detalleId === o.oferta_id ? null : o.oferta_id)}>
+              <button onClick={() => setDetalleId(prev => (prev === o.oferta_id ? null : o.oferta_id))}>
                 Detalles
               </button>
             </div>
-
-            {/* Dropdown de descripción */}
-            {detalleId === o.oferta_id && (
-              <OfertaDescripcion
-                ofertaId={o.oferta_id}
-                onClose={() => setDetalleId(null)}
-              />
-            )}
           </div>
         ))}
       </div>
+
+      {/* Mostrar la descripción de la oferta seleccionada */}
+      {detalleId && (
+        <OfertaDescripcion 
+          ofertaId={detalleId} 
+          onClose={() => setDetalleId(null)} 
+        />
+      )}
     </div>
   );
 }
