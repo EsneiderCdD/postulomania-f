@@ -1,101 +1,135 @@
-.container {
-  padding: 20px;
-  font-family: Arial, sans-serif;
+body {
+  background: #0d0d0d;
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
-.titulo {
+/* Contenedor */
+.container {
+  padding: 30px;
   text-align: center;
-  margin-bottom: 20px;
+}
+
+/* Título principal */
+.titulo {
+  font-size: 3rem;
+  color: #ff00ff;
+  text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff33cc;
+  margin-bottom: 30px;
+  letter-spacing: 2px;
+  animation: glow 2s infinite alternate;
+}
+
+@keyframes glow {
+  from { text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff33cc; }
+  to { text-shadow: 0 0 15px #ff33cc, 0 0 30px #ff00ff; }
 }
 
 /* Botones de orden */
 .orden-buttons {
   display: flex;
   justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 15px;
+  margin-bottom: 25px;
 }
 
 .orden-buttons button {
-  padding: 8px 16px;
-  font-size: 14px;
+  padding: 10px 20px;
+  font-size: 15px;
   font-weight: bold;
   border: none;
-  border-radius: 6px;
+  border-radius: 25px;
   cursor: pointer;
-  background-color: #007bff;
+  background: linear-gradient(135deg, #ff00ff, #00ffff);
   color: #fff;
-  transition: background-color 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .orden-buttons button:hover {
-  background-color: #0056b3;
+  transform: scale(1.05);
+  box-shadow: 0 0 15px #ff00ff, 0 0 25px #00ffff;
 }
 
 .orden-buttons button.active {
-  background-color: #28a745; /* Color verde para indicar activo */
+  background: linear-gradient(135deg, #00ff99, #00ffff);
+  box-shadow: 0 0 15px #00ff99, 0 0 25px #00ffff;
 }
 
 /* Grid de cards */
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
+  gap: 20px;
 }
 
+/* Card estilo casino */
 .card {
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  background: #1a1a1a;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 0 20px #ff00ff, 0 0 30px #00ffff;
 }
 
 .card h2 {
-  font-size: 18px;
-  margin-bottom: 8px;
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #00ffff;
+  text-shadow: 0 0 8px #00ffff;
 }
 
 .card p {
-  margin: 4px 0;
+  margin: 6px 0;
   font-size: 14px;
+  color: #ccc;
 }
 
 .fecha {
   font-size: 12px;
-  color: gray;
+  color: #888;
 }
 
+/* Botones de cada card */
 .card-buttons {
-  margin-top: 10px;
+  margin-top: 15px;
   display: flex;
-  gap: 10px;
+  gap: 12px;
 }
 
 .card-buttons button {
   flex: 1;
-  padding: 8px;
+  padding: 10px;
   font-size: 13px;
   font-weight: bold;
   border: none;
-  border-radius: 6px;
+  border-radius: 20px;
   cursor: pointer;
-  background-color: #007bff;
+  background: linear-gradient(135deg, #ff33cc, #6600ff);
   color: #fff;
-  transition: background-color 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
 
 .card-buttons button:hover {
-  background-color: #0056b3;
+  transform: scale(1.05);
+  box-shadow: 0 0 12px #ff33cc, 0 0 20px #6600ff;
 }
 
 .card-buttons button:disabled {
-  background-color: #ccc;
+  background: #444;
   cursor: not-allowed;
+  box-shadow: none;
 }
