@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import styles from "./Metrics.module.css";
 
 export default function Metrics() {
   const [tecnologias, setTecnologias] = useState([]);
@@ -37,87 +38,98 @@ export default function Metrics() {
   }, []);
 
   if (loading) {
-    return <div style={{ background: "#111", color: "#fff", height: "100vh", padding: "20px" }}>Cargando métricas...</div>;
+    return <div className={styles.container}>Cargando métricas...</div>;
   }
 
   return (
-    <div style={{ background: "#111", color: "#fff", minHeight: "100vh", padding: "20px", fontFamily: "monospace" }}>
+    <div className={styles.container}>
       <h1>Métricas</h1>
 
       {generales && (
-        <div style={{ marginBottom: "30px" }}>
-          <h2>Generales</h2>
-          <p>Total de ofertas: {generales.total_ofertas}</p>
-          <p>Promedio de compatibilidad: {generales.promedio_compatibilidad.toFixed(2)}</p>
+        <div className={`${styles.section} ${styles.cards}`}>
+          <div className={styles.card}>
+            <h2>Total de ofertas</h2>
+            <p>{generales.total_ofertas}</p>
+          </div>
+          <div className={styles.card}>
+            <h2>Promedio de compatibilidad</h2>
+            <p>{generales.promedio_compatibilidad.toFixed(2)}</p>
+          </div>
         </div>
       )}
 
-      <div style={{ marginBottom: "30px" }}>
+      <div className={styles.section}>
         <h2>Tecnologías</h2>
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr>
-              <th style={{ borderBottom: "1px solid #fff", textAlign: "left" }}>Tecnología</th>
-              <th style={{ borderBottom: "1px solid #fff" }}>Categoría</th>
-              <th style={{ borderBottom: "1px solid #fff" }}>Conteo</th>
-              <th style={{ borderBottom: "1px solid #fff" }}>Porcentaje</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tecnologias.map((t) => (
-              <tr key={t.nombre_tecnologia}>
-                <td>{t.nombre_tecnologia}</td>
-                <td>{t.categoria}</td>
-                <td>{t.conteo}</td>
-                <td>{t.porcentaje.toFixed(2)}%</td>
+        <div className={styles.tableContainer}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Tecnología</th>
+                <th>Categoría</th>
+                <th>Conteo</th>
+                <th>Porcentaje</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {tecnologias.map((t) => (
+                <tr key={t.nombre_tecnologia}>
+                  <td>{t.nombre_tecnologia}</td>
+                  <td>{t.categoria}</td>
+                  <td>{t.conteo}</td>
+                  <td className={styles.percentage}>{t.porcentaje.toFixed(2)}%</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <div style={{ marginBottom: "30px" }}>
+      <div className={styles.section}>
         <h2>Ubicaciones</h2>
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr>
-              <th style={{ borderBottom: "1px solid #fff", textAlign: "left" }}>Ciudad</th>
-              <th style={{ borderBottom: "1px solid #fff" }}>Conteo</th>
-              <th style={{ borderBottom: "1px solid #fff" }}>Porcentaje</th>
-            </tr>
-          </thead>
-          <tbody>
-            {ubicaciones.map((u) => (
-              <tr key={u.ciudad}>
-                <td>{u.ciudad}</td>
-                <td>{u.conteo}</td>
-                <td>{u.porcentaje.toFixed(2)}%</td>
+        <div className={styles.tableContainer}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Ciudad</th>
+                <th>Conteo</th>
+                <th>Porcentaje</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {ubicaciones.map((u) => (
+                <tr key={u.ciudad}>
+                  <td>{u.ciudad}</td>
+                  <td>{u.conteo}</td>
+                  <td className={styles.percentage}>{u.porcentaje.toFixed(2)}%</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <div>
+      <div className={styles.section}>
         <h2>Modalidades</h2>
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr>
-              <th style={{ borderBottom: "1px solid #fff", textAlign: "left" }}>Modalidad</th>
-              <th style={{ borderBottom: "1px solid #fff" }}>Conteo</th>
-              <th style={{ borderBottom: "1px solid #fff" }}>Porcentaje</th>
-            </tr>
-          </thead>
-          <tbody>
-            {modalidades.map((m) => (
-              <tr key={m.modalidad}>
-                <td>{m.modalidad}</td>
-                <td>{m.conteo}</td>
-                <td>{m.porcentaje.toFixed(2)}%</td>
+        <div className={styles.tableContainer}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Modalidad</th>
+                <th>Conteo</th>
+                <th>Porcentaje</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {modalidades.map((m) => (
+                <tr key={m.modalidad}>
+                  <td>{m.modalidad}</td>
+                  <td>{m.conteo}</td>
+                  <td className={styles.percentage}>{m.porcentaje.toFixed(2)}%</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
