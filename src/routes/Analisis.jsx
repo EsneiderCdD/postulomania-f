@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { FaExternalLinkAlt, FaCopy, FaCalendarAlt, FaSortAmountDown } from "react-icons/fa";
+import OfertaDescripcion from "./OfertaDescripcion"; // El componente que creamos
 import "../App.css";
 
 export default function Analisis() {
   const [ofertas, setOfertas] = useState([]);
   const [orden, setOrden] = useState("fecha"); 
+  const [detalleId, setDetalleId] = useState(null); // id de oferta para mostrar descripción
 
   useEffect(() => {
     const fetchOfertas = async () => {
@@ -30,27 +32,40 @@ export default function Analisis() {
   };
 
   const handleCopy = (url) => navigator.clipboard.writeText(url).then(() => alert("✅ Link copiado"));
-
   const handleGoTo = (url) => window.open(url, "_blank");
 
   return (
     <div className="container">
       <h1 className="titulo">🎰 Postulomanía 🎰</h1>
+
       <div className="orden-buttons">
         <button onClick={() => ordenarOfertas("fecha")} className={orden==="fecha"?"active":""}><FaCalendarAlt /> Fecha</button>
         <button onClick={() => ordenarOfertas("compatibilidad")} className={orden==="compatibilidad"?"active":""}><FaSortAmountDown /> Compatibilidad</button>
       </div>
+
       <div className="cards">
         {ofertas.map(o => (
-          <div key={o.id} className="card">
+          <div key={o.id} className="card" style={{ position: "relative" }}>
             <h2>{o.cargo}</h2>
             <p><strong>Ciudad:</strong> {o.ciudad}</p>
             <p><strong>Compatibilidad:</strong> {o.compatibilidad || 0}</p>
             <p className="fecha">{o.fecha ? new Date(o.fecha).toLocaleDateString() : ""}</p>
+
             <div className="card-buttons">
               <button onClick={() => handleGoTo(o.url)} disabled={!o.url}><FaExternalLinkAlt /> Ir</button>
               <button onClick={() => handleCopy(o.url)} disabled={!o.url}><FaCopy /> Copiar</button>
+              <button onClick={() => setDetalleId(detalleId === o.oferta_id ? null : o.oferta_id)}>
+                Detalles
+              </button>
             </div>
+
+            {/* Dropdown de descripción */}
+            {detalleId === o.oferta_id && (
+              <OfertaDescripcion
+                ofertaId={o.oferta_id}
+                onClose={() => setDetalleId(null)}
+              />
+            )}
           </div>
         ))}
       </div>
