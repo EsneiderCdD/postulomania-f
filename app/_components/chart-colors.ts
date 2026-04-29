@@ -1,0 +1,8 @@
+export const BRAND_CHART_COLORS = [
+  "#4C72B0",
+  "#55A868",
+  "#C44E52",
+  "#8172B2",
+  "#CCB974",
+  "#64B5CD",
+];
