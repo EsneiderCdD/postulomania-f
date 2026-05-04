@@ -16,14 +16,16 @@ import { BRAND_CHART_COLORS } from "./chart-colors";
 
 type EmpresaStats = {
   metrica: string;
-  total_empresas_unicas: number;
+  total_empresas_identificadas: number;
+  total_ofertas_anonimas: number;
+  ratio_ofertas_anonimas: string;
   top_10_empresas: Record<string, number>;
   ratio_nulos_empresa: string;
   total_empresas_solo_ingles: number;
   empresas_solo_ingles: string[];
   analisis_larga_cola: {
-    empresas_con_una_oferta: number;
-    porcentaje_larga_cola: string;
+    empresas_identificadas_con_una_oferta: number;
+    porcentaje_larga_cola_identificadas: string;
   };
 };
 
@@ -32,8 +34,8 @@ export default function EmpresaVisual({ data }: { data: EmpresaStats }) {
     .map(([empresa, ofertas]) => ({ empresa, ofertas }))
     .sort((a, b) => a.ofertas - b.ofertas);
 
-  const unaOferta = data.analisis_larga_cola.empresas_con_una_oferta;
-  const recurrentes = Math.max(data.total_empresas_unicas - unaOferta, 0);
+  const unaOferta = data.analisis_larga_cola.empresas_identificadas_con_una_oferta;
+  const recurrentes = Math.max(data.total_empresas_identificadas - unaOferta, 0);
   const colaRows = [
     { name: "Una oferta", value: unaOferta },
     { name: "Recurrentes", value: recurrentes },
@@ -47,12 +49,13 @@ export default function EmpresaVisual({ data }: { data: EmpresaStats }) {
 
       <div className="grid gap-4 md:grid-cols-3">
         <div className="rounded-xl border border-white/10 bg-neutral-950 p-4">
-          <p className="text-sm text-neutral-400">Empresas únicas</p>
-          <p className="text-3xl font-semibold text-white">{data.total_empresas_unicas}</p>
+          <p className="text-sm text-neutral-400">Empresas identificadas</p>
+          <p className="text-3xl font-semibold text-white">{data.total_empresas_identificadas}</p>
         </div>
         <div className="rounded-xl border border-white/10 bg-neutral-950 p-4">
-          <p className="text-sm text-neutral-400">Ratio nulos empresa</p>
-          <p className="text-3xl font-semibold text-white">{data.ratio_nulos_empresa}</p>
+          <p className="text-sm text-neutral-400">Ofertas anónimas</p>
+          <p className="text-3xl font-semibold text-white">{data.total_ofertas_anonimas}</p>
+          <p className="text-xs text-neutral-500">{data.ratio_ofertas_anonimas} del total</p>
         </div>
         <div className="rounded-xl border border-white/10 bg-neutral-950 p-4">
           <p className="text-sm text-neutral-400">Empresas solo ingles</p>
@@ -99,7 +102,7 @@ export default function EmpresaVisual({ data }: { data: EmpresaStats }) {
             </ResponsiveContainer>
           </div>
           <p className="mt-2 text-sm text-neutral-300">
-            Porcentaje larga cola: {data.analisis_larga_cola.porcentaje_larga_cola}
+            Porcentaje larga cola: {data.analisis_larga_cola.porcentaje_larga_cola_identificadas}
           </p>
         </div>
       </div>

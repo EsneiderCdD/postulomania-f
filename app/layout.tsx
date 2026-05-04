@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Sidebar from "./_reusable/sidebar";
 
 export const metadata: Metadata = {
   title: "Postulomaniaco",
@@ -13,7 +14,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body>{children}</body>
+      <body className="bg-neutral-950 text-neutral-100">
+        <div className="flex min-h-screen">
+          <main className="flex-1">{children}</main>
+          <Sidebar />
+        </div>
+      </body>
     </html>
   );
 }
