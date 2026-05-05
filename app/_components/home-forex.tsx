@@ -2,10 +2,9 @@
 
 import { useMemo } from "react";
 import {
-  Area,
   Bar,
+  BarChart,
   CartesianGrid,
-  ComposedChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -34,13 +33,7 @@ export default function HomeForex({ data }: { data: TimelineStats }) {
   const { serie, resumen } = data;
 
   const chartData = useMemo(() => {
-    return serie.reduce<
-      Array<{ fecha: string; total: number; acumulado: number }>
-    >((acc, d) => {
-      const prev = acc.length > 0 ? acc[acc.length - 1].acumulado : 0;
-      acc.push({ fecha: d.fecha, total: d.total, acumulado: prev + d.total });
-      return acc;
-    }, []);
+    return serie.map((d) => ({ fecha: d.fecha, total: d.total }));
   }, [serie]);
 
   const maxDiario = useMemo(() => {
@@ -79,16 +72,10 @@ export default function HomeForex({ data }: { data: TimelineStats }) {
             <div className="h-[420px]">
               {hasData ? (
                 <ResponsiveContainer width="100%" height="100%">
-                  <ComposedChart
+                  <BarChart
                     data={chartData}
                     margin={{ top: 8, right: 20, left: 8, bottom: 8 }}
                   >
-                    <defs>
-                      <linearGradient id="cumulativeGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor={BRAND_CHART_COLORS[0]} stopOpacity={0.25} />
-                        <stop offset="95%" stopColor={BRAND_CHART_COLORS[0]} stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
                     <CartesianGrid stroke="#262626" strokeDasharray="3 3" />
                     <XAxis
                       dataKey="fecha"
@@ -99,8 +86,7 @@ export default function HomeForex({ data }: { data: TimelineStats }) {
                         return `${day}/${m}`;
                       }}
                     />
-                    <YAxis yAxisId="left" stroke={BRAND_CHART_COLORS[0]} tick={{ fontSize: 11 }} />
-                    <YAxis yAxisId="right" orientation="right" stroke={BRAND_CHART_COLORS[3]} tick={{ fontSize: 11 }} />
+                    <YAxis stroke={BRAND_CHART_COLORS[0]} tick={{ fontSize: 11 }} />
                     <Tooltip
                       contentStyle={{
                         backgroundColor: "#171717",
@@ -108,29 +94,14 @@ export default function HomeForex({ data }: { data: TimelineStats }) {
                         borderRadius: "8px",
                       }}
                       labelFormatter={(label) => `Fecha: ${label}`}
-                      formatter={(_value, _name, item: { payload: { total: number; acumulado: number } }) => [
-                        `${_name === "acumulado" ? item.payload.acumulado : item.payload.total} ofertas`,
-                        _name === "acumulado" ? "Acumulado" : "Diario",
-                      ]}
+                      formatter={(value) => [`${value} ofertas`, "Ofertas"]}
                     />
                     <Bar
-                      yAxisId="right"
                       dataKey="total"
-                      name="Diario"
-                      fill={BRAND_CHART_COLORS[3]}
+                      fill={BRAND_CHART_COLORS[0]}
                       radius={[4, 4, 0, 0]}
-                      opacity={0.5}
                     />
-                    <Area
-                      yAxisId="left"
-                      type="monotone"
-                      dataKey="acumulado"
-                      name="Acumulado"
-                      stroke={BRAND_CHART_COLORS[0]}
-                      strokeWidth={2.5}
-                      fill="url(#cumulativeGradient)"
-                    />
-                  </ComposedChart>
+                  </BarChart>
                 </ResponsiveContainer>
               ) : (
                 <div className="flex h-full items-center justify-center text-neutral-500">
