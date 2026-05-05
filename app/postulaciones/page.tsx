@@ -1,22 +1,4 @@
-import OfertasTabla from "../_components/ofertas-tabla";
-
-type Oferta = {
-  id: number;
-  id_oferta: string;
-  titulo: string;
-  enlace: string;
-  fecha_extraccion: string;
-  experiencia_anios: number | null;
-  requiere_ingles: boolean;
-  origen_proceso: string;
-  empresa: string | null;
-  compatibilidad: number;
-};
-
-type OfertasResponse = {
-  total: number;
-  ofertas: Oferta[];
-};
+import PostulacionesTabla from "../_components/postulaciones-tabla";
 
 type PostulacionItem = {
   id: number;
@@ -51,29 +33,20 @@ async function fetchApi<T>(path: string): Promise<T> {
   }
 }
 
-export default async function OfertasPage() {
-  const [ofertasData, postulacionesData] = await Promise.all([
-    fetchApi<OfertasResponse>("/api/v1/ofertas"),
-    fetchApi<PostulacionesResponse>("/api/v1/postulaciones"),
-  ]);
+export default async function PostulacionesPage() {
+  const data = await fetchApi<PostulacionesResponse>("/api/v1/postulaciones");
 
   return (
     <main className="flex min-h-screen items-start justify-center bg-neutral-950 px-4 py-10 text-neutral-100">
       <div className="w-full max-w-6xl">
         <section className="rounded-2xl border border-white/10 bg-neutral-900 p-6 shadow-xl">
           <h1 className="mb-1 text-center text-3xl font-semibold tracking-tight text-white">
-            Ofertas
+            Postulaciones
           </h1>
           <p className="mb-6 text-center text-sm text-neutral-500">
-            {ofertasData.total} ofertas capturadas
+            {data.total} postulaciones
           </p>
-          <OfertasTabla
-            ofertas={ofertasData.ofertas}
-            postulaciones={postulacionesData.postulaciones.map((p) => ({
-              oferta_id: p.oferta_id,
-              estado_proceso: p.estado_proceso,
-            }))}
-          />
+          <PostulacionesTabla postulaciones={data.postulaciones} />
         </section>
       </div>
     </main>
