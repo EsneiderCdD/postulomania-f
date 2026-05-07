@@ -40,12 +40,24 @@ export default async function PostulacionesPage() {
     <main className="flex min-h-screen items-start justify-center bg-neutral-950 px-4 py-10 text-neutral-100">
       <div className="w-full max-w-6xl">
         <section className="rounded-2xl border border-white/10 bg-neutral-900 p-6 shadow-xl">
-          <h1 className="mb-1 text-center text-3xl font-semibold tracking-tight text-white">
-            Postulaciones
-          </h1>
-          <p className="mb-6 text-center text-sm text-neutral-500">
-            {data.total} postulaciones
-          </p>
+          <div className="mb-6 flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-semibold tracking-tight text-white">
+                Postulaciones
+              </h1>
+              <p className="text-sm text-neutral-500">
+                {data.total} postulaciones
+              </p>
+            </div>
+            {data.total > 0 && (
+              <a
+                href="/api/postulaciones/export"
+                className="rounded border border-white/10 px-4 py-2 text-xs text-neutral-400 hover:border-white/30 hover:text-neutral-200"
+              >
+                Descargar Excel
+              </a>
+            )}
+          </div>
           <PostulacionesTabla postulaciones={data.postulaciones} />
         </section>
       </div>

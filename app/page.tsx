@@ -4,6 +4,14 @@ type TimelineStats = {
   metrica: string;
   serie: Array<{ fecha: string; total: number; origenes: Record<string, number> }>;
   resumen: { total_historico: number; primer_dia: string | null; ultimo_dia: string | null; dias_con_datos: number; promedio_diario: number; mediana_diaria: number };
+  postulaciones: {
+    serie: Array<{ fecha: string; total: number; origenes: Record<string, number> }>;
+    resumen: { total_historico: number; primer_dia: string | null; ultimo_dia: string | null; dias_con_datos: number; promedio_diario: number; mediana_diaria: number };
+  };
+  comparativa: {
+    hoy: { fecha: string; ofertas: number; postulaciones: number; tasa_postulacion: number };
+    historico: { total_ofertas: number; total_postulaciones: number; tasa_postulacion: number };
+  };
 };
 
 async function fetchStats<T>(endpoint: string): Promise<T> {
