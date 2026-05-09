@@ -15,6 +15,21 @@ export async function createPostulacion(ofertaId: number) {
   return res.json();
 }
 
+export async function updatePostulacion(id: number, estado_proceso: string) {
+  const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
+  const res = await fetch(`${baseUrl}/api/v1/postulaciones/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ estado_proceso }),
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    console.error(`[updatePostulacion] HTTP ${res.status}: ${body}`);
+    return null;
+  }
+  return res.json();
+}
+
 export async function deletePostulacion(id: number) {
   const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
   const res = await fetch(`${baseUrl}/api/v1/postulaciones/${id}`, {

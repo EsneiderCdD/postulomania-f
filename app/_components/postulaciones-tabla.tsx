@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { deletePostulacion } from "../actions";
+import { deletePostulacion, updatePostulacion } from "../actions";
 
 type PostulacionItem = {
   id: number;
@@ -13,6 +13,8 @@ type PostulacionItem = {
   plataforma: string | null;
   estado_proceso: string;
 };
+
+const ESTADOS = ["Postulado", "HdV Vista", "Finalista", "Proceso finalizado"] as const;
 
 const ESTADO_STYLES: Record<string, string> = {
   "Postulado": "bg-blue-900/40 text-blue-300",
@@ -40,6 +42,17 @@ export default function PostulacionesTabla({
     const data = await deletePostulacion(id);
     if (data?.deleted) {
       setItems((prev) => prev.filter((p) => p.id !== id));
+    }
+  };
+
+  const handleEstadoChange = async (id: number, nuevoEstado: string) => {
+    const prevItems = items;
+    setItems((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, estado_proceso: nuevoEstado } : p))
+    );
+    const data = await updatePostulacion(id, nuevoEstado);
+    if (!data) {
+      setItems(prevItems);
     }
   };
 
@@ -84,11 +97,23 @@ export default function PostulacionesTabla({
                 {p.plataforma ?? "—"}
               </td>
               <td className="px-4 py-3 text-center">
-                <span
-                  className={`inline-block rounded px-2 py-0.5 text-xs font-medium ${ESTADO_STYLES[p.estado_proceso] ?? "bg-neutral-800 text-neutral-400"}`}
+                <select
+                  value={p.estado_proceso}
+                  onChange={(e) => handleEstadoChange(p.id, e.target.value)}
+                  className={`cursor-pointer rounded border-none px-2 py-0.5 text-xs font-medium outline-none transition-colors appearance-none bg-transparent ${ESTADO_STYLES[p.estado_proceso] ?? "bg-neutral-800 text-neutral-400"}`}
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='6' fill='none'%3E%3Cpath d='M1 1l3 3 3-3' stroke='%239ca3af' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E")`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "right 4px center",
+                    paddingRight: "18px",
+                  }}
                 >
-                  {p.estado_proceso}
-                </span>
+                  {ESTADOS.map((estado) => (
+                    <option key={estado} value={estado} className="bg-neutral-900 text-neutral-300">
+                      {estado}
+                    </option>
+                  ))}
+                </select>
               </td>
               <td className="px-4 py-3">
                 {p.link ? (
