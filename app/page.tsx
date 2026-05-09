@@ -31,7 +31,18 @@ async function fetchStats<T>(endpoint: string): Promise<T> {
   }
 }
 
+type OrigenStats = {
+  metrica: string;
+  frecuencia: Record<string, number>;
+  distribucion_porcentaje: Record<string, number>;
+  moda: string;
+  ratio_nulos: string;
+};
+
 export default async function Home() {
-  const timeline = await fetchStats<TimelineStats>("timeline");
-  return <HomeForex data={timeline} />;
+  const [timeline, origen] = await Promise.all([
+    fetchStats<TimelineStats>("timeline"),
+    fetchStats<OrigenStats>("origen"),
+  ]);
+  return <HomeForex data={timeline} origen={origen} />;
 }

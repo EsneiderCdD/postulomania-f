@@ -1,4 +1,3 @@
-import OrigenDonut from "../_components/origen-donut";
 import EmpresaVisual from "../_components/empresa-visual";
 import TechStackVisual from "../_components/tech-stack-visual";
 import ExperienceVisual from "../_components/experience-visual";
@@ -16,7 +15,6 @@ import ExperienceTimingVisual from "../_components/experience-timing-visual";
 import EmpresaCompatibilityVisual from "../_components/empresa-compatibility-visual";
 import TechCompatibilityVisual from "../_components/tech-compatibility-visual";
 
-type OrigenStats = { metrica: string; frecuencia: Record<string, number>; distribucion_porcentaje: Record<string, number>; moda: string; ratio_nulos: string };
 type EmpresaStats = { metrica: string; total_empresas_identificadas: number; total_ofertas_anonimas: number; ratio_ofertas_anonimas: string; top_10_empresas: Record<string, number>; ratio_nulos_empresa: string; total_empresas_solo_ingles: number; empresas_solo_ingles: string[]; analisis_larga_cola: { empresas_identificadas_con_una_oferta: number; porcentaje_larga_cola_identificadas: string } };
 type ExperienceStats = { metrica: string; promedio: number; mediana: number; moda: number; volatilidad_std: number; tasa_entry_level: string; distribucion_niveles: Record<string, number>; correlacion_exp_vs_techs: number; extremos: { max_anios: number; techs_asociadas: string[] } };
 type EnglishStats = { metrica: string; proporcion_general: string; impacto_experiencia_anios: Record<string, number>; carga_tecnica_promedio: Record<string, number>; impacto_compatibilidad: Record<string, number>; concentracion_por_origen: Record<string, string>; top_tecnologias_bilingues: Record<string, number> };
@@ -53,13 +51,12 @@ async function fetchStats<T>(endpoint: string): Promise<T> {
 
 export default async function Bodega() {
   const [
-    origenStats, empresaStats, techStackStats, experienceStats, englishStats,
+    empresaStats, techStackStats, experienceStats, englishStats,
     timingStats, titleStats, idStats, origenExperienceStats,
     origenTimingStats, origenEmpresaStats, englishTimingStats,
     experienceEmpresaStats, experienceCompatibilityStats, experienceTimingStats,
     empresaCompatibilityStats, techCompatibilityStats,
   ] = await Promise.all([
-    fetchStats<OrigenStats>("origen"),
     fetchStats<EmpresaStats>("empresa"),
     fetchStats<TechStackStats>("tech-stack"),
     fetchStats<ExperienceStats>("experience"),
@@ -81,7 +78,6 @@ export default async function Bodega() {
   return (
     <main className="flex min-h-screen items-start justify-center bg-neutral-950 px-4 py-10 text-neutral-100">
       <div className="flex w-full max-w-6xl flex-col gap-8">
-        <OrigenDonut data={origenStats} />
         <EmpresaVisual data={empresaStats} />
         <TechStackVisual data={techStackStats} />
         <ExperienceVisual data={experienceStats} />

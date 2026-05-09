@@ -21,7 +21,7 @@ function percentLabel(value: number) {
   return `${value.toFixed(1)}%`;
 }
 
-export default function OrigenDonut({ data }: { data: OrigenStats }) {
+export default function OrigenDonut({ data, compact }: { data: OrigenStats; compact?: boolean }) {
   const rows: ChartRow[] = Object.entries(data.distribucion_porcentaje).map(
     ([name, value]) => ({
       name,
@@ -30,25 +30,44 @@ export default function OrigenDonut({ data }: { data: OrigenStats }) {
     }),
   );
 
+  const chartHeight = compact ? 280 : 480;
+  const innerR = compact ? 58 : 95;
+  const outerR = compact ? 105 : 170;
+  const labelFz = compact ? 14 : 22;
+  const centerFz = compact ? 24 : 34;
+  const subFz = compact ? 12 : 14;
+  const sw = compact ? 2 : 3;
+  const headingClass = compact ? "mb-3 text-center text-lg font-semibold tracking-tight text-white" : "mb-6 text-center text-3xl font-semibold tracking-tight text-white";
+  const wrapperClass = compact
+    ? "rounded-xl border border-white/10 bg-neutral-950 p-4"
+    : "w-full max-w-4xl rounded-2xl border border-white/10 bg-neutral-900 p-6 shadow-xl";
+  const legendClass = compact
+    ? "mt-1 flex flex-wrap items-center justify-center gap-3 text-xs text-neutral-300"
+    : "mt-2 flex flex-wrap items-center justify-center gap-6 text-sm text-neutral-200";
+
+  const bottomMargin = compact ? 40 : 55;
+
   return (
-    <section className="w-full max-w-4xl rounded-2xl border border-white/10 bg-neutral-900 p-6 shadow-xl">
-      <h1 className="mb-6 text-center text-3xl font-semibold tracking-tight text-white">
+    <section className={wrapperClass}>
+      <h1 className={headingClass}>
         {data.metrica}
       </h1>
 
-      <div className="h-[480px] w-full">
+      <div style={{ height: chartHeight, width: "100%" }}>
         <ResponsiveContainer width="100%" height="100%">
-          <PieChart margin={{ top: 20, right: 20, bottom: 55, left: 20 }}>
+          <PieChart margin={{ top: 8, right: 8, bottom: bottomMargin, left: 8 }}>
             <Pie
               data={rows}
               dataKey="value"
               nameKey="name"
-              innerRadius={95}
-              outerRadius={170}
+              innerRadius={innerR}
+              outerRadius={outerR}
               stroke="#0a0a0a"
-              strokeWidth={3}
+              strokeWidth={sw}
               label={({ cx, cy, midAngle, innerRadius, outerRadius, value }) => {
-                const radius = Number(innerRadius) + (Number(outerRadius) - Number(innerRadius)) * 0.5;
+                const iR = Number(innerRadius);
+                const oR = Number(outerRadius);
+                const radius = iR + (oR - iR) * 0.5;
                 const x = Number(cx) + radius * Math.cos((-midAngle * Math.PI) / 180);
                 const y = Number(cy) + radius * Math.sin((-midAngle * Math.PI) / 180);
                 return (
@@ -58,7 +77,7 @@ export default function OrigenDonut({ data }: { data: OrigenStats }) {
                     fill="#ffffff"
                     textAnchor="middle"
                     dominantBaseline="central"
-                    fontSize={22}
+                    fontSize={labelFz}
                     fontWeight={700}
                   >
                     {percentLabel(Number(value))}
@@ -79,17 +98,17 @@ export default function OrigenDonut({ data }: { data: OrigenStats }) {
               ]}
             />
 
-            <text x="50%" y="48%" textAnchor="middle" dominantBaseline="middle" fill="#fafafa" fontSize={34} fontWeight={700}>
+            <text x="50%" y="47%" textAnchor="middle" dominantBaseline="middle" fill="#fafafa" fontSize={centerFz} fontWeight={700}>
               {data.moda}
             </text>
-            <text x="50%" y="56%" textAnchor="middle" dominantBaseline="middle" fill="#a3a3a3" fontSize={14}>
+            <text x="50%" y={compact ? "55%" : "56%"} textAnchor="middle" dominantBaseline="middle" fill="#a3a3a3" fontSize={subFz}>
               Portal dominante
             </text>
           </PieChart>
         </ResponsiveContainer>
       </div>
 
-      <div className="mt-2 flex flex-wrap items-center justify-center gap-6 text-sm text-neutral-200">
+      <div className={legendClass}>
         {rows.map((entry, index) => (
           <div key={entry.name} className="flex items-center gap-2">
             <span

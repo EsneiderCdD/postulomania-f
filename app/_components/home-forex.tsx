@@ -11,6 +11,15 @@ import {
   YAxis,
 } from "recharts";
 import { BRAND_CHART_COLORS } from "./chart-colors";
+import OrigenDonut from "./origen-donut";
+
+type OrigenStats = {
+  metrica: string;
+  frecuencia: Record<string, number>;
+  distribucion_porcentaje: Record<string, number>;
+  moda: string;
+  ratio_nulos: string;
+};
 
 type TimelineStats = {
   metrica: string;
@@ -57,7 +66,7 @@ type TimelineStats = {
   };
 };
 
-export default function HomeForex({ data }: { data: TimelineStats }) {
+export default function HomeForex({ data, origen }: { data: TimelineStats; origen: OrigenStats }) {
   const { serie, resumen, postulaciones, comparativa } = data;
 
   const chartData = useMemo(() => {
@@ -85,8 +94,6 @@ export default function HomeForex({ data }: { data: TimelineStats }) {
     return Math.min(...serie.map((d) => d.total));
   }, [serie]);
 
-  const hoyTotal = serie.length > 0 ? serie[serie.length - 1].total : 0;
-  const hoyPostulaciones = postulaciones.serie.length > 0 ? postulaciones.serie[postulaciones.serie.length - 1].total : 0;
   const hasData = serie.length > 0;
 
   return (
@@ -97,20 +104,17 @@ export default function HomeForex({ data }: { data: TimelineStats }) {
             {data.metrica}
           </h1>
 
-          <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-            <KpiCard label="Total histórico" value={resumen.total_historico} />
-            <KpiCard label="Hoy" value={hoyTotal} />
-            <KpiCard label="Promedio diario" value={resumen.promedio_diario} />
-            <KpiCard label="Máximo diario" value={maxDiario} />
-            <KpiCard label="Mínimo diario" value={minDiario} />
-          </div>
+          <div className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <OrigenDonut data={origen} compact />
 
-          <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-            <KpiCard label="Total postulaciones" value={postulaciones.resumen.total_historico} />
-            <KpiCard label="Postulaciones hoy" value={hoyPostulaciones} />
-            <KpiCard label="Tasa postulación" value={`${comparativa.historico.tasa_postulacion}%`} />
-            <KpiCard label="Promedio post./día" value={postulaciones.resumen.promedio_diario} />
-            <KpiCard label="Máx. post./día" value={postulaciones.resumen.dias_con_datos > 0 ? Math.max(...postulaciones.serie.map((d) => d.total)) : 0} />
+            <div className="grid grid-cols-2 gap-3">
+                <KpiCard label="Total histórico" value={resumen.total_historico} />
+                <KpiCard label="Total postulaciones" value={postulaciones.resumen.total_historico} />
+                <KpiCard label="Tasa postulación" value={`${comparativa.historico.tasa_postulacion}%`} />
+                <KpiCard label="Promedio diario" value={resumen.promedio_diario} />
+                <KpiCard label="Máximo diario" value={maxDiario} />
+                <KpiCard label="Mínimo diario" value={minDiario} />
+              </div>
           </div>
 
           <div className="mt-6 rounded-xl border border-white/10 bg-neutral-950 p-4">
