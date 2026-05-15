@@ -1,6 +1,8 @@
 "use client";
 
 import { useMemo } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   Bar,
   BarChart,
@@ -95,6 +97,7 @@ export default function HomeForex({ data, origen }: { data: TimelineStats; orige
   }, [serie]);
 
   const hasData = serie.length > 0;
+  const pathname = usePathname();
 
   return (
     <main className="flex min-h-screen items-start justify-center bg-neutral-950 px-4 py-10 text-neutral-100">
@@ -105,16 +108,19 @@ export default function HomeForex({ data, origen }: { data: TimelineStats; orige
           </h1>
 
           <div className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <OrigenDonut data={origen} compact />
-
-            <div className="grid grid-cols-2 gap-3">
-                <KpiCard label="Total histórico" value={resumen.total_historico} />
-                <KpiCard label="Total postulaciones" value={postulaciones.resumen.total_historico} />
-                <KpiCard label="Tasa postulación" value={`${comparativa.historico.tasa_postulacion}%`} />
-                <KpiCard label="Promedio diario" value={resumen.promedio_diario} />
-                <KpiCard label="Máximo diario" value={maxDiario} />
-                <KpiCard label="Mínimo diario" value={minDiario} />
-              </div>
+            <OrigenDonut
+              data={origen}
+              compact
+              stats={{
+                totalHistorico: resumen.total_historico,
+                totalPostulaciones: postulaciones.resumen.total_historico,
+                tasaPostulacion: `${comparativa.historico.tasa_postulacion}%`,
+                promedioDiario: resumen.promedio_diario,
+                maxDiario,
+                minDiario,
+              }}
+            />
+            <MenuPanel pathname={pathname} />
           </div>
 
           <div className="mt-6 rounded-xl border border-white/10 bg-neutral-950 p-4">
@@ -194,6 +200,52 @@ function OverlayBar(props: Record<string, unknown>) {
   );
 }
 
+const links = [
+  { href: "/", label: "Home" },
+  { href: "/bodega", label: "Bodega" },
+  { href: "/ofertas", label: "Ofertas" },
+  { href: "/postulaciones", label: "Postulaciones" },
+];
+
+const filtros = ["dds", "dds_full", "fullstack", "antioquia", "reset", "refresh"];
+
+function MenuPanel({ pathname }: { pathname: string }) {
+  return (
+    <div className="sticky top-10 rounded-xl border border-white/10 bg-neutral-950 p-5">
+      <h2 className="text-lg font-semibold text-white mb-4">Postulomanico</h2>
+
+      <nav className="flex flex-col gap-2 mb-5">
+        {links.map(({ href, label }) => {
+          const isActive = pathname === href;
+          return (
+            <Link
+              key={href}
+              href={href}
+              className={`text-sm ${isActive ? "text-white font-medium" : "text-neutral-400"} hover:text-white transition-colors`}
+            >
+              {label}
+            </Link>
+          );
+        })}
+      </nav>
+
+      <div className="border-t border-white/10 pt-4">
+        <div className="grid grid-cols-2 gap-2">
+          {filtros.map((f) => (
+            <button
+              key={f}
+              type="button"
+              className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-neutral-300 hover:border-white/20 hover:text-white transition-colors"
+            >
+              {f}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function OverlayTooltip(props: Record<string, unknown>) {
   const active = props.active as boolean | undefined;
   const payload = props.payload as Array<{ payload: { fecha: string; ofertas: number; postulaciones: number } }> | undefined;
@@ -216,19 +268,6 @@ function OverlayTooltip(props: Record<string, unknown>) {
       <p style={{ color: "#a3a3a3", margin: 0 }}>{`Fecha: ${fecha}`}</p>
       <p style={{ color: BRAND_CHART_COLORS[0], margin: "2px 0 0" }}>{`Ofertas: ${ofertas}`}</p>
       <p style={{ color: BRAND_CHART_COLORS[1], margin: "2px 0 0" }}>{`Postulaciones: ${postulaciones}`}</p>
-    </div>
-  );
-}
-
-function KpiCard({ label, value }: { label: string; value: string | number }) {
-  const formatted = typeof value === "number" && !Number.isInteger(value)
-    ? value.toFixed(1)
-    : value;
-
-  return (
-    <div className="rounded-xl border border-white/10 bg-neutral-950 p-4">
-      <p className="text-sm text-neutral-400">{label}</p>
-      <p className="text-2xl font-semibold text-white">{formatted}</p>
     </div>
   );
 }
