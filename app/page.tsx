@@ -35,7 +35,7 @@ async function fetchStats<T>(endpoint: string): Promise<T> {
 
 async function fetchMapaOfertas(): Promise<MapaResponse> {
   const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
-  const url = `${baseUrl}/api/v1/mapa/ofertas?departamento=Antioquia`;
+  const url = `${baseUrl}/api/v1/mapa/empresas?departamento=Antioquia`;
   try {
     const response = await fetch(url, { cache: "no-store" });
     if (!response.ok) {
