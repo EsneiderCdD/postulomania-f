@@ -13,7 +13,22 @@ const markerIcon = L.divIcon({
   popupAnchor: [0, -6],
 });
 
+const yoIcon = L.divIcon({
+  className: "",
+  html: '<div style="width:14px;height:14px;border-radius:50%;background:#3b82f6;box-shadow:0 0 8px 3px rgba(59,130,246,0.6),0 0 12px 5px rgba(255,255,255,0.15);border:2px solid #fff;"></div>',
+  iconSize: [14, 14],
+  iconAnchor: [7, 7],
+  popupAnchor: [0, -8],
+});
+
 L.Marker.prototype.options.icon = markerIcon;
+
+const PUNTO_YO = {
+  nombre: "Yo",
+  lat: 6.154659,
+  lng: -75.604820,
+  direccion: "Cra. 41, Alto Las Flores, Sabaneta, Antioquia",
+};
 
 type OfertaEmpresa = {
   id_oferta: string;
@@ -153,6 +168,18 @@ export default function MapaOfertas({ data }: { data: MapaResponse }) {
                 <EmpresaPopup empresa={e} />
               </Marker>
             ))}
+            <Marker position={[PUNTO_YO.lat, PUNTO_YO.lng]} icon={yoIcon}>
+              <Popup>
+                <div style={{ padding: "2px 0" }}>
+                  <div style={{ fontWeight: 600, color: "#f5f5f5", fontSize: "13px", lineHeight: 1.3, marginBottom: 2 }}>
+                    {PUNTO_YO.nombre}
+                  </div>
+                  <div style={{ color: "#a3a3a3", fontSize: "11px", lineHeight: 1.4 }}>
+                    {PUNTO_YO.direccion}
+                  </div>
+                </div>
+              </Popup>
+            </Marker>
           </MapContainer>
         </div>
       </div>

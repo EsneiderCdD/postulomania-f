@@ -1,6 +1,7 @@
 import HomeForex from "./_components/home-forex";
 import type { MapaResponse } from "./_components/mapa-ofertas";
 import MapaWrapper from "./_components/mapa-wrapper";
+import TechRadarHome from "./_components/tech-radar-home";
 
 type TimelineStats = {
   metrica: string;
@@ -68,8 +69,9 @@ export default async function Home() {
     <>
       <HomeForex data={timeline} origen={origen} />
       <div className="flex items-start justify-center px-4 pb-10">
-        <div className="w-full max-w-6xl">
+        <div className="w-full max-w-6xl space-y-6">
           <MapaWrapper data={mapa} />
+          <TechRadarHome data={mapa} />
         </div>
       </div>
     </>
