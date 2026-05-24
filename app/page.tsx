@@ -1,79 +1,31 @@
-import HomeForex from "./_components/home-forex";
-import type { MapaResponse } from "./_components/mapa-ofertas";
-import MapaWrapper from "./_components/mapa-wrapper";
-import TechRadarHome from "./_components/tech-radar-home";
-
-type TimelineStats = {
-  metrica: string;
-  serie: Array<{ fecha: string; total: number; origenes: Record<string, number> }>;
-  resumen: { total_historico: number; primer_dia: string | null; ultimo_dia: string | null; dias_con_datos: number; promedio_diario: number; mediana_diaria: number };
-  postulaciones: {
-    serie: Array<{ fecha: string; total: number; origenes: Record<string, number> }>;
-    resumen: { total_historico: number; primer_dia: string | null; ultimo_dia: string | null; dias_con_datos: number; promedio_diario: number; mediana_diaria: number };
-  };
-  comparativa: {
-    hoy: { fecha: string; ofertas: number; postulaciones: number; tasa_postulacion: number };
-    historico: { total_ofertas: number; total_postulaciones: number; tasa_postulacion: number };
-  };
-};
-
-async function fetchStats<T>(endpoint: string): Promise<T> {
-  const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
-  const url = `${baseUrl}/api/v1/stats/${endpoint}`;
-  try {
-    const response = await fetch(url, { cache: "no-store" });
-    if (!response.ok) {
-      const body = await response.text();
-      console.error(`[fetchStats] ${endpoint} → HTTP ${response.status}: ${body}`);
-      throw new Error(`${endpoint}: HTTP ${response.status}`);
-    }
-    return (await response.json()) as T;
-  } catch (err) {
-    console.error(`[fetchStats] ${endpoint} → ${err instanceof Error ? err.message : err}`);
-    throw err;
-  }
-}
-
-async function fetchMapaOfertas(): Promise<MapaResponse> {
-  const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
-  const url = `${baseUrl}/api/v1/mapa/empresas?departamento=Antioquia`;
-  try {
-    const response = await fetch(url, { cache: "no-store" });
-    if (!response.ok) {
-      const body = await response.text();
-      console.error(`[fetchMapa] → HTTP ${response.status}: ${body}`);
-      throw new Error(`mapa/ofertas: HTTP ${response.status}`);
-    }
-    return (await response.json()) as MapaResponse;
-  } catch (err) {
-    console.error(`[fetchMapa] → ${err instanceof Error ? err.message : err}`);
-    throw err;
-  }
-}
-
-type OrigenStats = {
-  metrica: string;
-  frecuencia: Record<string, number>;
-  distribucion_porcentaje: Record<string, number>;
-  moda: string;
-  ratio_nulos: string;
-};
-
-export default async function Home() {
-  const [timeline, origen, mapa] = await Promise.all([
-    fetchStats<TimelineStats>("timeline"),
-    fetchStats<OrigenStats>("origen"),
-    fetchMapaOfertas(),
-  ]);
+export default function Home() {
   return (
-    <>
-      <HomeForex data={timeline} origen={origen} />
-      <div className="flex items-start justify-center px-4 pb-10">
-        <div className="w-full max-w-6xl space-y-6">
-          <MapaWrapper data={mapa} />
-          <TechRadarHome data={mapa} />
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-neutral-950">
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 80% 60% at 50% 40%, rgba(251,191,36,0.12) 0%, rgba(245,158,11,0.04) 40%, transparent 70%)",
+        }}
+      />
+
+      <div className="relative z-10 mx-auto w-[98%] max-w-[1333px] min-h-screen rounded-3xl border border-white/5 bg-neutral-900 px-6 py-16 md:px-10 md:py-24">
+        <div className="flex flex-col items-center gap-6 text-center">
+          <img
+            src="/images/mascota.png"
+            alt="Mascota Postulomanía"
+            className="h-48 w-48 object-contain drop-shadow-[0_0_40px_rgba(251,191,36,0.3)]"
+          />
+
+          <h1 className="font-exo text-6xl font-bold tracking-tight text-white md:text-7xl">
+            Postulomaniaco
+          </h1>
+
+          <p className="font-amatic-sc text-3xl text-amber-300 md:text-4xl">
+            SOFWARE DE EXTRACCION Y GESTION DE VACANTES
+          </p>
         </div>
       </div>
-    </>
+    </main>
   );
 }

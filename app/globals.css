@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+.font-exo {
+  font-family: var(--font-exo);
+}
+
+.font-amatic-sc {
+  font-family: var(--font-amatic-sc);
+}
+
 .leaflet-popup-content-wrapper {
   background: #171717 !important;
   color: #f5f5f5 !important;
