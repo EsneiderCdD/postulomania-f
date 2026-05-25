@@ -11,6 +11,7 @@ type Oferta = {
   origen_proceso: string;
   empresa: string | null;
   compatibilidad: number;
+  empresa_id: number | null;
 };
 
 type OfertasResponse = {

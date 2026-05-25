@@ -1,7 +1,5 @@
 import type { MapaResponse } from "../_components/mapa-ofertas";
-import MapaWrapper from "../_components/mapa-wrapper";
-import TablaEmpresas from "../_components/tabla-empresas";
-import OfertasTabla from "../_components/ofertas-tabla";
+import PanelPrincipal from "../_components/panel-principal";
 
 type Oferta = {
   id: number;
@@ -14,6 +12,7 @@ type Oferta = {
   origen_proceso: string;
   empresa: string | null;
   compatibilidad: number;
+  empresa_id: number | null;
 };
 
 type OfertasResponse = {
@@ -56,7 +55,7 @@ async function fetchApi<T>(path: string): Promise<T> {
 
 async function fetchMapaOfertas(): Promise<MapaResponse> {
   const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
-  const url = `${baseUrl}/api/v1/mapa/empresas?departamento=Antioquia`;
+  const url = `${baseUrl}/api/v1/mapa/empresas`;
   try {
     const response = await fetch(url, { cache: "no-store" });
     if (!response.ok) {
@@ -94,14 +93,10 @@ export default async function Principal() {
           </h1>
 
           <div className="mt-8 w-full space-y-6">
-            <MapaWrapper data={mapa} />
-            <TablaEmpresas data={mapa} />
-            <OfertasTabla
+            <PanelPrincipal
+              mapa={mapa}
               ofertas={ofertasData.ofertas}
-              postulaciones={postulacionesData.postulaciones.map((p) => ({
-                oferta_id: p.oferta_id,
-                estado_proceso: p.estado_proceso,
-              }))}
+              postulaciones={postulacionesData.postulaciones}
             />
           </div>
         </div>

@@ -14,6 +14,7 @@ type Oferta = {
   origen_proceso: string;
   empresa: string | null;
   compatibilidad: number;
+  empresa_id: number | null;
 };
 
 type PostulacionProp = {
@@ -64,9 +65,11 @@ function origenLabel(origen: string) {
 export default function OfertasTabla({
   ofertas,
   postulaciones,
+  onSeguirEmpresa,
 }: {
   ofertas: Oferta[];
   postulaciones: PostulacionProp[];
+  onSeguirEmpresa?: (empresaId: number) => void;
 }) {
   const [applied, setApplied] = useState(() => {
     const map = new Map<number, string>();
@@ -169,19 +172,30 @@ export default function OfertasTabla({
                   )}
                 </td>
                 <td className="px-4 py-3 text-center">
-                  {estado ? (
-                    <span className={`inline-block rounded px-2 py-0.5 text-xs font-medium ${ESTADO_STYLES[estado] ?? "bg-neutral-800 text-neutral-400"}`}>
-                      {estado}
-                    </span>
-                  ) : (
-                    <button
-                      onClick={() => handlePostular(oferta.id)}
-                      disabled={isPostulando}
-                      className="rounded border border-white/10 px-3 py-1 text-xs text-neutral-400 hover:border-white/30 hover:text-neutral-200 disabled:opacity-50"
-                    >
-                      {isPostulando ? "..." : "Postularme"}
-                    </button>
-                  )}
+                  <div className="flex items-center justify-center gap-1.5">
+                    {oferta.empresa_id && (
+                      <button
+                        onClick={() => onSeguirEmpresa?.(oferta.empresa_id!)}
+                        className="rounded border border-amber-500/30 px-2 py-1 text-xs text-amber-400 hover:border-amber-500/60 hover:text-amber-300 transition-colors"
+                        title={`Seguir ${oferta.empresa ?? "empresa"} en el mapa`}
+                      >
+                        Seguir
+                      </button>
+                    )}
+                    {estado ? (
+                      <span className={`inline-block rounded px-2 py-0.5 text-xs font-medium ${ESTADO_STYLES[estado] ?? "bg-neutral-800 text-neutral-400"}`}>
+                        {estado}
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => handlePostular(oferta.id)}
+                        disabled={isPostulando}
+                        className="rounded border border-white/10 px-3 py-1 text-xs text-neutral-400 hover:border-white/30 hover:text-neutral-200 disabled:opacity-50"
+                      >
+                        {isPostulando ? "..." : "Postularme"}
+                      </button>
+                    )}
+                  </div>
                 </td>
               </tr>
             );

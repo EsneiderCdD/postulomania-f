@@ -42,3 +42,38 @@ export async function deletePostulacion(id: number) {
   }
   return res.json();
 }
+
+export async function getEmpresa(id: number) {
+  const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
+  const res = await fetch(`${baseUrl}/api/v1/empresas/${id}`);
+  if (!res.ok) {
+    const body = await res.text();
+    console.error(`[getEmpresa] HTTP ${res.status}: ${body}`);
+    return null;
+  }
+  return res.json();
+}
+
+export type EmpresaFields = {
+  lat?: number | null;
+  lng?: number | null;
+  direccion?: string | null;
+  website?: string | null;
+  municipio?: string | null;
+  departamento?: string | null;
+};
+
+export async function updateEmpresa(id: number, fields: EmpresaFields) {
+  const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
+  const res = await fetch(`${baseUrl}/api/v1/empresas/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(fields),
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    console.error(`[updateEmpresa] HTTP ${res.status}: ${body}`);
+    return null;
+  }
+  return res.json();
+}

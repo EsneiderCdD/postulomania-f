@@ -48,8 +48,8 @@ type EmpresaMapa = {
   direccion: string;
   municipio: string;
   departamento: string;
-  lat: number;
-  lng: number;
+  lat: number | null;
+  lng: number | null;
   total_ofertas: number;
   ofertas: OfertaEmpresa[];
 };
@@ -157,11 +157,13 @@ export default function MapaOfertas({ data }: { data: MapaResponse }) {
             attribution='&copy; <a href="https://carto.com/">CARTO</a>'
             url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
           />
-          {data.empresas.map((e) => (
-            <Marker key={e.id} position={[e.lat, e.lng]}>
-              <EmpresaPopup empresa={e} />
-            </Marker>
-          ))}
+          {data.empresas
+            .filter((e) => e.lat != null && e.lng != null)
+            .map((e) => (
+              <Marker key={e.id} position={[e.lat, e.lng]}>
+                <EmpresaPopup empresa={e} />
+              </Marker>
+            ))}
           <Marker position={[PUNTO_YO.lat, PUNTO_YO.lng]} icon={yoIcon}>
             <Popup>
               <div style={{ padding: "2px 0" }}>
