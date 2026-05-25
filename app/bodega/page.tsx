@@ -1,3 +1,6 @@
+import type { MapaResponse } from "../_components/mapa-ofertas";
+import HomeForex from "../_components/home-forex";
+import TechRadarHome from "../_components/tech-radar-home";
 import EmpresaVisual from "../_components/empresa-visual";
 import TechStackVisual from "../_components/tech-stack-visual";
 import ExperienceVisual from "../_components/experience-visual";
@@ -14,6 +17,28 @@ import ExperienceCompatibilityVisual from "../_components/experience-compatibili
 import ExperienceTimingVisual from "../_components/experience-timing-visual";
 import EmpresaCompatibilityVisual from "../_components/empresa-compatibility-visual";
 import TechCompatibilityVisual from "../_components/tech-compatibility-visual";
+
+type TimelineStats = {
+  metrica: string;
+  serie: Array<{ fecha: string; total: number; origenes: Record<string, number> }>;
+  resumen: { total_historico: number; primer_dia: string | null; ultimo_dia: string | null; dias_con_datos: number; promedio_diario: number; mediana_diaria: number };
+  postulaciones: {
+    serie: Array<{ fecha: string; total: number; origenes: Record<string, number> }>;
+    resumen: { total_historico: number; primer_dia: string | null; ultimo_dia: string | null; dias_con_datos: number; promedio_diario: number; mediana_diaria: number };
+  };
+  comparativa: {
+    hoy: { fecha: string; ofertas: number; postulaciones: number; tasa_postulacion: number };
+    historico: { total_ofertas: number; total_postulaciones: number; tasa_postulacion: number };
+  };
+};
+
+type OrigenStats = {
+  metrica: string;
+  frecuencia: Record<string, number>;
+  distribucion_porcentaje: Record<string, number>;
+  moda: string;
+  ratio_nulos: string;
+};
 
 type EmpresaStats = { metrica: string; total_empresas_identificadas: number; total_ofertas_anonimas: number; ratio_ofertas_anonimas: string; top_10_empresas: Record<string, number>; ratio_nulos_empresa: string; total_empresas_solo_ingles: number; empresas_solo_ingles: string[]; analisis_larga_cola: { empresas_identificadas_con_una_oferta: number; porcentaje_larga_cola_identificadas: string } };
 type ExperienceStats = { metrica: string; promedio: number; mediana: number; moda: number; volatilidad_std: number; tasa_entry_level: string; distribucion_niveles: Record<string, number>; correlacion_exp_vs_techs: number; extremos: { max_anios: number; techs_asociadas: string[] } };
@@ -49,14 +74,35 @@ async function fetchStats<T>(endpoint: string): Promise<T> {
   }
 }
 
+async function fetchMapaOfertas(): Promise<MapaResponse> {
+  const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
+  const url = `${baseUrl}/api/v1/mapa/empresas?departamento=Antioquia`;
+  try {
+    const response = await fetch(url, { cache: "no-store" });
+    if (!response.ok) {
+      const body = await response.text();
+      console.error(`[fetchMapa] → HTTP ${response.status}: ${body}`);
+      throw new Error(`mapa/ofertas: HTTP ${response.status}`);
+    }
+    return (await response.json()) as MapaResponse;
+  } catch (err) {
+    console.error(`[fetchMapa] → ${err instanceof Error ? err.message : err}`);
+    throw err;
+  }
+}
+
 export default async function Bodega() {
   const [
+    timeline, origen, mapa,
     empresaStats, techStackStats, experienceStats, englishStats,
     timingStats, titleStats, idStats, origenExperienceStats,
     origenTimingStats, origenEmpresaStats, englishTimingStats,
     experienceEmpresaStats, experienceCompatibilityStats, experienceTimingStats,
     empresaCompatibilityStats, techCompatibilityStats,
   ] = await Promise.all([
+    fetchStats<TimelineStats>("timeline"),
+    fetchStats<OrigenStats>("origen"),
+    fetchMapaOfertas(),
     fetchStats<EmpresaStats>("empresa"),
     fetchStats<TechStackStats>("tech-stack"),
     fetchStats<ExperienceStats>("experience"),
@@ -78,6 +124,8 @@ export default async function Bodega() {
   return (
     <main className="flex min-h-screen items-start justify-center bg-neutral-950 px-4 py-10 text-neutral-100">
       <div className="flex w-full max-w-6xl flex-col gap-8">
+        <HomeForex data={timeline} origen={origen} standalone={false} />
+        <TechRadarHome data={mapa} />
         <EmpresaVisual data={empresaStats} />
         <TechStackVisual data={techStackStats} />
         <ExperienceVisual data={experienceStats} />

@@ -147,42 +147,34 @@ function EmpresaPopup({ empresa }: { empresa: EmpresaMapa }) {
 export default function MapaOfertas({ data }: { data: MapaResponse }) {
   return (
     <section className="rounded-2xl border border-white/10 bg-neutral-900 shadow-xl overflow-hidden">
-      <h2 className="px-6 pt-6 text-lg font-semibold text-white">
-        Mapa de Ofertas &mdash; Medellín y Valle de Aburrá
-      </h2>
-      <p className="px-6 text-sm text-neutral-400">
-        {data.total} empresa{data.total === 1 ? "" : "s"} con ofertas
-      </p>
-      <div className="p-6">
-        <div className="h-[500px] w-full rounded-xl overflow-hidden">
-          <MapContainer
-            center={[6.21, -75.58]}
-            zoom={12}
-            style={{ height: "100%", width: "100%" }}
-          >
-            <TileLayer
-              attribution='&copy; <a href="https://carto.com/">CARTO</a>'
-              url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-            />
-            {data.empresas.map((e) => (
-              <Marker key={e.id} position={[e.lat, e.lng]}>
-                <EmpresaPopup empresa={e} />
-              </Marker>
-            ))}
-            <Marker position={[PUNTO_YO.lat, PUNTO_YO.lng]} icon={yoIcon}>
-              <Popup>
-                <div style={{ padding: "2px 0" }}>
-                  <div style={{ fontWeight: 600, color: "#f5f5f5", fontSize: "13px", lineHeight: 1.3, marginBottom: 2 }}>
-                    {PUNTO_YO.nombre}
-                  </div>
-                  <div style={{ color: "#a3a3a3", fontSize: "11px", lineHeight: 1.4 }}>
-                    {PUNTO_YO.direccion}
-                  </div>
-                </div>
-              </Popup>
+      <div className="h-[500px] w-full">
+        <MapContainer
+          center={[6.21, -75.58]}
+          zoom={12}
+          style={{ height: "100%", width: "100%" }}
+        >
+          <TileLayer
+            attribution='&copy; <a href="https://carto.com/">CARTO</a>'
+            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          />
+          {data.empresas.map((e) => (
+            <Marker key={e.id} position={[e.lat, e.lng]}>
+              <EmpresaPopup empresa={e} />
             </Marker>
-          </MapContainer>
-        </div>
+          ))}
+          <Marker position={[PUNTO_YO.lat, PUNTO_YO.lng]} icon={yoIcon}>
+            <Popup>
+              <div style={{ padding: "2px 0" }}>
+                <div style={{ fontWeight: 600, color: "#f5f5f5", fontSize: "13px", lineHeight: 1.3, marginBottom: 2 }}>
+                  {PUNTO_YO.nombre}
+                </div>
+                <div style={{ color: "#a3a3a3", fontSize: "11px", lineHeight: 1.4 }}>
+                  {PUNTO_YO.direccion}
+                </div>
+              </div>
+            </Popup>
+          </Marker>
+        </MapContainer>
       </div>
     </section>
   );

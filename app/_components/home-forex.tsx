@@ -68,7 +68,15 @@ type TimelineStats = {
   };
 };
 
-export default function HomeForex({ data, origen }: { data: TimelineStats; origen: OrigenStats }) {
+export default function HomeForex({
+  data,
+  origen,
+  standalone = true,
+}: {
+  data: TimelineStats;
+  origen: OrigenStats;
+  standalone?: boolean;
+}) {
   const { serie, resumen, postulaciones, comparativa } = data;
 
   const chartData = useMemo(() => {
@@ -99,70 +107,76 @@ export default function HomeForex({ data, origen }: { data: TimelineStats; orige
   const hasData = serie.length > 0;
   const pathname = usePathname();
 
+  const content = (
+    <section className="rounded-2xl border border-white/10 bg-neutral-900 p-6 shadow-xl">
+      <h1 className="mb-6 text-center text-3xl font-semibold tracking-tight text-white">
+        {data.metrica}
+      </h1>
+
+      <div className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <OrigenDonut
+          data={origen}
+          compact
+          stats={{
+            totalHistorico: resumen.total_historico,
+            totalPostulaciones: postulaciones.resumen.total_historico,
+            tasaPostulacion: `${comparativa.historico.tasa_postulacion}%`,
+            promedioDiario: resumen.promedio_diario,
+            maxDiario,
+            minDiario,
+          }}
+        />
+        <MenuPanel pathname={pathname} />
+      </div>
+
+      <div className="mt-6 rounded-xl border border-white/10 bg-neutral-950 p-4">
+        <h2 className="mb-3 text-sm font-medium text-neutral-300">
+          Seguimiento diario
+        </h2>
+        <div className="h-[420px]">
+          {hasData ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={chartData}
+                margin={{ top: 8, right: 20, left: 8, bottom: 8 }}
+              >
+                <CartesianGrid stroke="#262626" strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="fecha"
+                  stroke="#a3a3a3"
+                  tick={{ fontSize: 11 }}
+                  tickFormatter={(d: string) => {
+                    const [, m, day] = d.split("-");
+                    return `${day}/${m}`;
+                  }}
+                />
+                <YAxis stroke={BRAND_CHART_COLORS[0]} tick={{ fontSize: 11 }} />
+                <Tooltip content={<OverlayTooltip />} />
+                <Bar
+                  dataKey="ofertas"
+                  name="Ofertas"
+                  fill={BRAND_CHART_COLORS[0]}
+                  shape={<OverlayBar />}
+                  isAnimationActive={false}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="flex h-full items-center justify-center text-neutral-500">
+              Sin datos disponibles
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+
+  if (!standalone) return content;
+
   return (
     <main className="flex min-h-screen items-start justify-center bg-neutral-950 px-4 py-10 text-neutral-100">
       <div className="w-full max-w-6xl">
-        <section className="rounded-2xl border border-white/10 bg-neutral-900 p-6 shadow-xl">
-          <h1 className="mb-6 text-center text-3xl font-semibold tracking-tight text-white">
-            {data.metrica}
-          </h1>
-
-          <div className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <OrigenDonut
-              data={origen}
-              compact
-              stats={{
-                totalHistorico: resumen.total_historico,
-                totalPostulaciones: postulaciones.resumen.total_historico,
-                tasaPostulacion: `${comparativa.historico.tasa_postulacion}%`,
-                promedioDiario: resumen.promedio_diario,
-                maxDiario,
-                minDiario,
-              }}
-            />
-            <MenuPanel pathname={pathname} />
-          </div>
-
-          <div className="mt-6 rounded-xl border border-white/10 bg-neutral-950 p-4">
-            <h2 className="mb-3 text-sm font-medium text-neutral-300">
-              Seguimiento diario
-            </h2>
-            <div className="h-[420px]">
-              {hasData ? (
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart
-                    data={chartData}
-                    margin={{ top: 8, right: 20, left: 8, bottom: 8 }}
-                  >
-                    <CartesianGrid stroke="#262626" strokeDasharray="3 3" />
-                    <XAxis
-                      dataKey="fecha"
-                      stroke="#a3a3a3"
-                      tick={{ fontSize: 11 }}
-                      tickFormatter={(d: string) => {
-                        const [, m, day] = d.split("-");
-                        return `${day}/${m}`;
-                      }}
-                    />
-                    <YAxis stroke={BRAND_CHART_COLORS[0]} tick={{ fontSize: 11 }} />
-                    <Tooltip content={<OverlayTooltip />} />
-                    <Bar
-                      dataKey="ofertas"
-                      name="Ofertas"
-                      fill={BRAND_CHART_COLORS[0]}
-                      shape={<OverlayBar />}
-                      isAnimationActive={false}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              ) : (
-                <div className="flex h-full items-center justify-center text-neutral-500">
-                  Sin datos disponibles
-                </div>
-              )}
-            </div>
-          </div>
-        </section>
+        {content}
       </div>
     </main>
   );

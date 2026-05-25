@@ -1,38 +1,5 @@
-import HomeForex from "../_components/home-forex";
 import type { MapaResponse } from "../_components/mapa-ofertas";
 import MapaWrapper from "../_components/mapa-wrapper";
-import TechRadarHome from "../_components/tech-radar-home";
-
-type TimelineStats = {
-  metrica: string;
-  serie: Array<{ fecha: string; total: number; origenes: Record<string, number> }>;
-  resumen: { total_historico: number; primer_dia: string | null; ultimo_dia: string | null; dias_con_datos: number; promedio_diario: number; mediana_diaria: number };
-  postulaciones: {
-    serie: Array<{ fecha: string; total: number; origenes: Record<string, number> }>;
-    resumen: { total_historico: number; primer_dia: string | null; ultimo_dia: string | null; dias_con_datos: number; promedio_diario: number; mediana_diaria: number };
-  };
-  comparativa: {
-    hoy: { fecha: string; ofertas: number; postulaciones: number; tasa_postulacion: number };
-    historico: { total_ofertas: number; total_postulaciones: number; tasa_postulacion: number };
-  };
-};
-
-async function fetchStats<T>(endpoint: string): Promise<T> {
-  const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
-  const url = `${baseUrl}/api/v1/stats/${endpoint}`;
-  try {
-    const response = await fetch(url, { cache: "no-store" });
-    if (!response.ok) {
-      const body = await response.text();
-      console.error(`[fetchStats] ${endpoint} → HTTP ${response.status}: ${body}`);
-      throw new Error(`${endpoint}: HTTP ${response.status}`);
-    }
-    return (await response.json()) as T;
-  } catch (err) {
-    console.error(`[fetchStats] ${endpoint} → ${err instanceof Error ? err.message : err}`);
-    throw err;
-  }
-}
 
 async function fetchMapaOfertas(): Promise<MapaResponse> {
   const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
@@ -51,29 +18,29 @@ async function fetchMapaOfertas(): Promise<MapaResponse> {
   }
 }
 
-type OrigenStats = {
-  metrica: string;
-  frecuencia: Record<string, number>;
-  distribucion_porcentaje: Record<string, number>;
-  moda: string;
-  ratio_nulos: string;
-};
-
 export default async function Principal() {
-  const [timeline, origen, mapa] = await Promise.all([
-    fetchStats<TimelineStats>("timeline"),
-    fetchStats<OrigenStats>("origen"),
-    fetchMapaOfertas(),
-  ]);
+  const mapa = await fetchMapaOfertas();
   return (
-    <>
-      <HomeForex data={timeline} origen={origen} />
-      <div className="flex items-start justify-center px-4 pb-10">
-        <div className="w-full max-w-6xl space-y-6">
-          <MapaWrapper data={mapa} />
-          <TechRadarHome data={mapa} />
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-neutral-950">
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 80% 60% at 50% 40%, rgba(251,191,36,0.12) 0%, rgba(245,158,11,0.04) 40%, transparent 70%)",
+        }}
+      />
+
+      <div className="relative z-10 mx-auto w-[98%] max-w-[1333px] min-h-screen rounded-3xl border border-white/5 bg-neutral-900">
+        <div className="flex min-h-screen flex-col items-center px-6 py-8">
+          <h1 className="hero-title text-center text-4xl md:text-5xl">
+            Postulomaniaco
+          </h1>
+
+          <div className="mt-8 w-full">
+            <MapaWrapper data={mapa} />
+          </div>
         </div>
       </div>
-    </>
+    </main>
   );
 }
