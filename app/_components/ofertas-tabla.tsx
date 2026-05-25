@@ -66,10 +66,12 @@ export default function OfertasTabla({
   ofertas,
   postulaciones,
   onSeguirEmpresa,
+  empresasSeguidas,
 }: {
   ofertas: Oferta[];
   postulaciones: PostulacionProp[];
   onSeguirEmpresa?: (empresaId: number) => void;
+  empresasSeguidas?: Set<number>;
 }) {
   const [applied, setApplied] = useState(() => {
     const map = new Map<number, string>();
@@ -173,7 +175,11 @@ export default function OfertasTabla({
                 </td>
                 <td className="px-4 py-3 text-center">
                   <div className="flex items-center justify-center gap-1.5">
-                    {oferta.empresa_id && (
+                    {empresasSeguidas?.has(oferta.empresa_id!) ? (
+                      <span className="rounded border border-amber-500/20 px-2 py-1 text-xs font-medium text-amber-500/70 bg-amber-500/5">
+                        Siguiendo
+                      </span>
+                    ) : (
                       <button
                         onClick={() => onSeguirEmpresa?.(oferta.empresa_id!)}
                         className="rounded border border-amber-500/30 px-2 py-1 text-xs text-amber-400 hover:border-amber-500/60 hover:text-amber-300 transition-colors"

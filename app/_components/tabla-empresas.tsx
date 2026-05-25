@@ -5,14 +5,28 @@ import { useRouter } from "next/navigation";
 import { updateEmpresa } from "../actions";
 import type { MapaResponse } from "./mapa-ofertas";
 
+type EmpresaData = {
+  id: number;
+  nombre: string;
+  website: string | null;
+  direccion: string;
+  municipio: string;
+  departamento: string;
+  lat: number | null;
+  lng: number | null;
+  total_ofertas?: number;
+};
+
 type Editando = { empresaId: number; campo: string } | null;
 
 export default function TablaEmpresas({
   data,
+  seguidas,
   focusEmpresaId,
   onFocusDone,
 }: {
   data: MapaResponse;
+  seguidas?: EmpresaData[];
   focusEmpresaId?: number | null;
   onFocusDone?: () => void;
 }) {
@@ -21,6 +35,11 @@ export default function TablaEmpresas({
   const [editando, setEditando] = useState<Editando>(null);
   const [editValue, setEditValue] = useState("");
   const [saving, setSaving] = useState(false);
+
+  const allEmpresas = [
+    ...data.empresas,
+    ...(seguidas ?? []).filter((s) => !data.empresas.some((e) => e.id === s.id)),
+  ];
 
   useEffect(() => {
     if (focusEmpresaId) {
@@ -114,7 +133,7 @@ export default function TablaEmpresas({
             </tr>
           </thead>
           <tbody>
-            {data.empresas.map((empresa) => (
+            {allEmpresas.map((empresa) => (
               <tr
                 key={empresa.id}
                 ref={(el) => {
@@ -142,7 +161,7 @@ export default function TablaEmpresas({
                   {renderCelda(empresa.id, "lng", empresa.lng, "—")}
                 </td>
                 <td className="px-5 py-3 text-right tabular-nums text-neutral-400">
-                  {empresa.total_ofertas}
+                  {empresa.total_ofertas ?? ""}
                 </td>
               </tr>
             ))}

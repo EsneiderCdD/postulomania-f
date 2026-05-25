@@ -5,6 +5,7 @@ import type { MapaResponse } from "./mapa-ofertas";
 import MapaWrapper from "./mapa-wrapper";
 import TablaEmpresas from "./tabla-empresas";
 import OfertasTabla from "./ofertas-tabla";
+import { getEmpresa } from "../actions";
 
 type Oferta = {
   id: number;
@@ -31,6 +32,17 @@ type PostulacionItem = {
   estado_proceso: string;
 };
 
+type EmpresaSeguida = {
+  id: number;
+  nombre: string;
+  website: string | null;
+  direccion: string;
+  municipio: string;
+  departamento: string;
+  lat: number | null;
+  lng: number | null;
+};
+
 export default function PanelPrincipal({
   mapa,
   ofertas,
@@ -40,11 +52,24 @@ export default function PanelPrincipal({
   ofertas: Oferta[];
   postulaciones: PostulacionItem[];
 }) {
+  const [seguidas, setSeguidas] = useState<EmpresaSeguida[]>([]);
   const [focusEmpresaId, setFocusEmpresaId] = useState<number | null>(null);
 
-  const handleSeguirEmpresa = useCallback((empresaId: number) => {
-    setFocusEmpresaId(empresaId);
-  }, []);
+  const empresasSeguidasIds = new Set(seguidas.map((s) => s.id));
+
+  const handleSeguirEmpresa = useCallback(async (empresaId: number) => {
+    const yaExiste = seguidas.some((s) => s.id === empresaId);
+    if (yaExiste) {
+      setFocusEmpresaId(empresaId);
+      return;
+    }
+
+    const data = await getEmpresa(empresaId);
+    if (data && !data.error) {
+      setSeguidas((prev) => [...prev, data]);
+      setFocusEmpresaId(empresaId);
+    }
+  }, [seguidas]);
 
   const handleFocusDone = useCallback(() => {
     setFocusEmpresaId(null);
@@ -55,6 +80,7 @@ export default function PanelPrincipal({
       <MapaWrapper data={mapa} />
       <TablaEmpresas
         data={mapa}
+        seguidas={seguidas}
         focusEmpresaId={focusEmpresaId}
         onFocusDone={handleFocusDone}
       />
@@ -65,6 +91,7 @@ export default function PanelPrincipal({
           estado_proceso: p.estado_proceso,
         }))}
         onSeguirEmpresa={handleSeguirEmpresa}
+        empresasSeguidas={empresasSeguidasIds}
       />
     </>
   );
