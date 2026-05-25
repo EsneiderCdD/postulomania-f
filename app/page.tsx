@@ -1,3 +1,12 @@
+import Link from "next/link";
+
+const links = [
+  { href: "/principal", label: "Página Principal" },
+  { href: "/bodega", label: "Bodega" },
+  { href: "/ofertas", label: "Ofertas" },
+  { href: "/postulaciones", label: "Postulaciones" },
+];
+
 export default function Home() {
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-neutral-950">
@@ -11,16 +20,29 @@ export default function Home() {
 
       <div className="relative z-10 mx-auto w-[98%] max-w-[1333px] min-h-screen rounded-3xl border border-white/5 bg-neutral-900">
         <div className="grid grid-cols-5 grid-rows-5 min-h-screen">
-          <div className="col-span-5 row-span-2">
-            <h1 className="font-exo text-6xl font-bold tracking-tight text-white md:text-7xl">
+          <div className="col-span-5 row-span-2 flex items-center justify-center">
+            <h1 className="hero-title text-7xl md:text-8xl">
               Postulomaniaco
             </h1>
           </div>
 
-          <div className="col-span-3 row-span-3 col-start-3 row-start-3">
-            <p className="font-amatic-sc text-3xl text-amber-300 md:text-4xl">
+          <div className="col-span-3 row-span-3 col-start-3 row-start-3 flex flex-col items-center justify-center gap-6 px-4">
+            <p className="hero-subtitle text-center text-3xl md:text-4xl">
               SOFWARE DE EXTRACCION Y GESTION DE VACANTES
             </p>
+
+            <p className="text-center text-sm leading-relaxed text-neutral-400 max-w-md font-[system-ui]">
+              Herramienta integral para la búsqueda, extracción y seguimiento de
+              ofertas laborales en el ecosistema tech de Antioquia.
+            </p>
+
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              {links.map(({ href, label }) => (
+                <Link key={href} href={href} className="btn-secondary">
+                  {label}
+                </Link>
+              ))}
+            </div>
           </div>
 
           <div className="col-span-2 row-span-3 row-start-3 relative">
