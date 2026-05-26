@@ -9,6 +9,7 @@ const links = [
   { href: "/bodega", label: "Bodega" },
   { href: "/ofertas", label: "Ofertas" },
   { href: "/postulaciones", label: "Postulaciones" },
+  { href: "/perfil", label: "Perfil" },
 ];
 
 export default function Sidebar() {

@@ -7,6 +7,7 @@ import MapaWrapper from "./mapa-wrapper";
 import TablaEmpresas from "./tabla-empresas";
 import OfertasTabla from "./ofertas-tabla";
 import ModalIngresarOferta from "./modal-ingresar-oferta";
+import ModalModificarOferta from "./modal-modificar-oferta";
 
 type Oferta = {
   id: number;
@@ -44,7 +45,8 @@ export default function PanelPrincipal({
 }) {
   const router = useRouter();
   const [focusEmpresaId, setFocusEmpresaId] = useState<number | null>(null);
-  const [modalAbierto, setModalAbierto] = useState(false);
+  const [modalIngresarAbierto, setModalIngresarAbierto] = useState(false);
+  const [modalModificarAbierto, setModalModificarAbierto] = useState(false);
 
   const seguimientoIds = new Set(
     mapa.empresas.filter((e) => e.en_seguimiento).map((e) => e.id)
@@ -58,8 +60,10 @@ export default function PanelPrincipal({
     setFocusEmpresaId(null);
   }, []);
 
-  const handleOpenModal = useCallback(() => setModalAbierto(true), []);
-  const handleCloseModal = useCallback(() => setModalAbierto(false), []);
+  const handleOpenIngresar = useCallback(() => setModalIngresarAbierto(true), []);
+  const handleCloseIngresar = useCallback(() => setModalIngresarAbierto(false), []);
+  const handleOpenModificar = useCallback(() => setModalModificarAbierto(true), []);
+  const handleCloseModificar = useCallback(() => setModalModificarAbierto(false), []);
   const handleSuccess = useCallback(() => router.refresh(), [router]);
 
   return (
@@ -67,8 +71,8 @@ export default function PanelPrincipal({
       <MapaWrapper data={mapa} />
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 px-1 mt-4">
         {[
-          { label: "Ingresar oferta", action: handleOpenModal },
-          { label: "Seguimiento", action: undefined },
+          { label: "Ingresar oferta", action: handleOpenIngresar },
+          { label: "Modificar oferta", action: handleOpenModificar },
           { label: "Postulaciones", action: undefined },
           { label: "Por salario", action: undefined },
           { label: "Vista compacta", action: undefined },
@@ -84,8 +88,13 @@ export default function PanelPrincipal({
         ))}
       </div>
       <ModalIngresarOferta
-        abierto={modalAbierto}
-        onClose={handleCloseModal}
+        abierto={modalIngresarAbierto}
+        onClose={handleCloseIngresar}
+        onSuccess={handleSuccess}
+      />
+      <ModalModificarOferta
+        abierto={modalModificarAbierto}
+        onClose={handleCloseModificar}
         onSuccess={handleSuccess}
       />
       <TablaEmpresas
