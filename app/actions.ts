@@ -78,6 +78,38 @@ export async function updateEmpresa(id: number, fields: EmpresaFields) {
   return res.json();
 }
 
+export type OfertaFields = {
+  id_oferta: string;
+  origen_proceso: string;
+  titulo?: string | null;
+  enlace?: string | null;
+  descripcion?: string | null;
+  municipio?: string | null;
+  departamento?: string | null;
+  fecha_publicacion_estimada?: string | null;
+  experiencia_anios?: number | null;
+  requiere_ingles?: boolean;
+  keyword?: string | null;
+  empresa_id?: number | null;
+  tecnologias?: string[] | null;
+  compatibilidad?: number | null;
+};
+
+export async function createOferta(fields: OfertaFields) {
+  const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
+  const res = await fetch(`${baseUrl}/api/v1/ofertas`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(fields),
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    console.error(`[createOferta] HTTP ${res.status}: ${body}`);
+    return { error: body };
+  }
+  return res.json();
+}
+
 export async function toggleSeguimiento(empresaId: number, enSeguimiento: boolean) {
   const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
   const res = await fetch(`${baseUrl}/api/v1/empresas/${empresaId}`, {
