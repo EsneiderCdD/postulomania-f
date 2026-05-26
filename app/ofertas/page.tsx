@@ -71,6 +71,7 @@ export default async function OfertasPage() {
           <OfertasTabla
             ofertas={ofertasData.ofertas}
             postulaciones={postulacionesData.postulaciones.map((p) => ({
+              id: p.id,
               oferta_id: p.oferta_id,
               estado_proceso: p.estado_proceso,
             }))}

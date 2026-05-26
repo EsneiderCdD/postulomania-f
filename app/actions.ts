@@ -77,3 +77,18 @@ export async function updateEmpresa(id: number, fields: EmpresaFields) {
   }
   return res.json();
 }
+
+export async function toggleSeguimiento(empresaId: number, enSeguimiento: boolean) {
+  const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
+  const res = await fetch(`${baseUrl}/api/v1/empresas/${empresaId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ en_seguimiento: enSeguimiento }),
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    console.error(`[toggleSeguimiento] HTTP ${res.status}: ${body}`);
+    return null;
+  }
+  return res.json();
+}

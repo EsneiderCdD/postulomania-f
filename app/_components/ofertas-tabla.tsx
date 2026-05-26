@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { createPostulacion } from "../actions";
+import { useRouter } from "next/navigation";
+import { createPostulacion, deletePostulacion } from "../actions";
+import { toggleSeguimiento } from "../actions";
 
 type Oferta = {
   id: number;
@@ -18,6 +20,7 @@ type Oferta = {
 };
 
 type PostulacionProp = {
+  id: number;
   oferta_id: number;
   estado_proceso: string;
 };
@@ -66,17 +69,18 @@ export default function OfertasTabla({
   ofertas,
   postulaciones,
   onSeguirEmpresa,
-  empresasSeguidas,
+  seguimientoIds,
 }: {
   ofertas: Oferta[];
   postulaciones: PostulacionProp[];
   onSeguirEmpresa?: (empresaId: number) => void;
-  empresasSeguidas?: Set<number>;
+  seguimientoIds?: Set<number>;
 }) {
+  const router = useRouter();
   const [applied, setApplied] = useState(() => {
-    const map = new Map<number, string>();
+    const map = new Map<number, { id: number; estado: string }>();
     for (const p of postulaciones) {
-      map.set(p.oferta_id, p.estado_proceso);
+      map.set(p.oferta_id, { id: p.id, estado: p.estado_proceso });
     }
     return map;
   });
@@ -88,12 +92,31 @@ export default function OfertasTabla({
     if (data?.postulacion) {
       setApplied((prev) => {
         const next = new Map(prev);
-        next.set(ofertaId, data.postulacion.estado_proceso);
+        next.set(ofertaId, { id: data.postulacion.id, estado: data.postulacion.estado_proceso });
         return next;
       });
     }
     setLoadingId(null);
   }, []);
+
+  const handleDespostular = useCallback(async (ofertaId: number) => {
+    const entry = applied.get(ofertaId);
+    if (!entry) return;
+    await deletePostulacion(entry.id);
+    setApplied((prev) => {
+      const next = new Map(prev);
+      next.delete(ofertaId);
+      return next;
+    });
+  }, [applied]);
+
+  const handleToggleSeguir = useCallback(async (empresaId: number, activo: boolean) => {
+    await toggleSeguimiento(empresaId, !activo);
+    router.refresh();
+    if (!activo) {
+      onSeguirEmpresa?.(empresaId);
+    }
+  }, [router, onSeguirEmpresa]);
 
   if (ofertas.length === 0) {
     return (
@@ -122,8 +145,10 @@ export default function OfertasTabla({
         </thead>
         <tbody className="divide-y divide-white/5">
           {ofertas.map((oferta, i) => {
-            const estado = applied.get(oferta.id);
+            const post = applied.get(oferta.id);
+            const estado = post?.estado;
             const isPostulando = loadingId === oferta.id;
+            const isSiguiendo = oferta.empresa_id != null && seguimientoIds?.has(oferta.empresa_id);
             return (
               <tr
                 key={`${oferta.id}-${i}`}
@@ -175,13 +200,17 @@ export default function OfertasTabla({
                 </td>
                 <td className="px-4 py-3 text-center">
                   <div className="flex items-center justify-center gap-1.5">
-                    {empresasSeguidas?.has(oferta.empresa_id!) ? (
-                      <span className="rounded border border-amber-500/20 px-2 py-1 text-xs font-medium text-amber-500/70 bg-amber-500/5">
+                    {isSiguiendo ? (
+                      <button
+                        onClick={() => handleToggleSeguir(oferta.empresa_id!, true)}
+                        className="rounded border border-amber-500/20 px-2 py-1 text-xs font-medium text-amber-500/70 bg-amber-500/5 hover:border-amber-500/40 transition-colors"
+                        title="Dejar de seguir"
+                      >
                         Siguiendo
-                      </span>
+                      </button>
                     ) : (
                       <button
-                        onClick={() => onSeguirEmpresa?.(oferta.empresa_id!)}
+                        onClick={() => handleToggleSeguir(oferta.empresa_id!, false)}
                         className="rounded border border-amber-500/30 px-2 py-1 text-xs text-amber-400 hover:border-amber-500/60 hover:text-amber-300 transition-colors"
                         title={`Seguir ${oferta.empresa ?? "empresa"} en el mapa`}
                       >
@@ -189,9 +218,13 @@ export default function OfertasTabla({
                       </button>
                     )}
                     {estado ? (
-                      <span className={`inline-block rounded px-2 py-0.5 text-xs font-medium ${ESTADO_STYLES[estado] ?? "bg-neutral-800 text-neutral-400"}`}>
+                      <button
+                        onClick={() => handleDespostular(oferta.id)}
+                        className={`inline-block rounded px-2 py-0.5 text-xs font-medium ${ESTADO_STYLES[estado] ?? "bg-neutral-800 text-neutral-400"} cursor-pointer hover:opacity-80`}
+                        title="Click para quitar postulación"
+                      >
                         {estado}
-                      </span>
+                      </button>
                     ) : (
                       <button
                         onClick={() => handlePostular(oferta.id)}
