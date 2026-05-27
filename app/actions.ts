@@ -43,6 +43,19 @@ export async function deletePostulacion(id: number) {
   return res.json();
 }
 
+export async function deleteOferta(id: number) {
+  const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
+  const res = await fetch(`${baseUrl}/api/v1/ofertas/${id}`, {
+    method: "DELETE",
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    console.error(`[deleteOferta] HTTP ${res.status}: ${body}`);
+    return null;
+  }
+  return res.json();
+}
+
 export async function getEmpresa(id: number) {
   const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
   const res = await fetch(`${baseUrl}/api/v1/empresas/${id}`);

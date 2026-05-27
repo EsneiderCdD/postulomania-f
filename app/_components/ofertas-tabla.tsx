@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { createPostulacion, deletePostulacion } from "../actions";
+import { createPostulacion, deletePostulacion, deleteOferta } from "../actions";
 import { toggleSeguimiento } from "../actions";
 
 type Oferta = {
@@ -85,6 +85,7 @@ export default function OfertasTabla({
     return map;
   });
   const [loadingId, setLoadingId] = useState<number | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
 
   const handlePostular = useCallback(async (ofertaId: number) => {
     setLoadingId(ofertaId);
@@ -117,6 +118,21 @@ export default function OfertasTabla({
       onSeguirEmpresa?.(empresaId);
     }
   }, [router, onSeguirEmpresa]);
+
+  const handleDeleteClick = useCallback((ofertaId: number) => {
+    setConfirmDeleteId(ofertaId);
+  }, []);
+
+  const handleConfirmDelete = useCallback(async () => {
+    if (confirmDeleteId == null) return;
+    await deleteOferta(confirmDeleteId);
+    setConfirmDeleteId(null);
+    router.refresh();
+  }, [confirmDeleteId, router]);
+
+  const handleCancelDelete = useCallback(() => {
+    setConfirmDeleteId(null);
+  }, []);
 
   if (ofertas.length === 0) {
     return (
@@ -234,6 +250,19 @@ export default function OfertasTabla({
                         {isPostulando ? "..." : "Postularme"}
                       </button>
                     )}
+                    <button
+                      onClick={() => handleDeleteClick(oferta.id)}
+                      className="rounded p-1 text-neutral-600 transition-colors hover:text-red-400 hover:bg-red-400/10"
+                      title="Eliminar oferta"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="3 6 5 6 21 6" />
+                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                        <path d="M10 11v6" />
+                        <path d="M14 11v6" />
+                        <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                      </svg>
+                    </button>
                   </div>
                 </td>
               </tr>
@@ -241,6 +270,31 @@ export default function OfertasTabla({
           })}
         </tbody>
       </table>
+
+      {confirmDeleteId != null && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="fixed inset-0 bg-black/70" onClick={handleCancelDelete} />
+          <div className="relative z-10 w-full max-w-sm rounded-xl border border-white/10 bg-neutral-950 p-6 shadow-2xl">
+            <p className="mb-6 text-sm text-neutral-300">
+              ¿Estás seguro de eliminar esta oferta? Esta acción no se puede deshacer.
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={handleCancelDelete}
+                className="rounded-lg border border-white/10 px-4 py-2 text-sm text-neutral-400 hover:border-white/30 hover:text-neutral-200 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleConfirmDelete}
+                className="rounded-lg bg-red-600/80 px-4 py-2 text-sm font-medium text-white hover:bg-red-600 transition-colors"
+              >
+                Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
