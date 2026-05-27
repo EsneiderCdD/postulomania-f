@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import type { MapaResponse } from "./mapa-ofertas";
 import MapaWrapper from "./mapa-wrapper";
 import TablaEmpresas from "./tabla-empresas";
@@ -69,23 +70,49 @@ export default function PanelPrincipal({
   return (
     <>
       <MapaWrapper data={mapa} />
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 px-1 mt-4">
-        {[
-          { label: "Ingresar oferta", action: handleOpenIngresar },
-          { label: "Modificar oferta", action: handleOpenModificar },
-          { label: "Postulaciones", action: undefined },
-          { label: "Por salario", action: undefined },
-          { label: "Vista compacta", action: undefined },
-          { label: "Actualizar", action: undefined },
-        ].map(({ label, action }) => (
-          <button
-            key={label}
-            onClick={action}
-            className="rounded-lg border border-amber-500/25 bg-neutral-900/80 px-3 py-2.5 text-sm font-medium text-amber-400/80 transition-colors hover:border-amber-500/50 hover:text-amber-300 hover:bg-neutral-800/80"
-          >
-            {label}
-          </button>
-        ))}
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 px-1 mt-4">
+        <button
+          onClick={handleOpenIngresar}
+          className="rounded-lg border border-amber-500/25 bg-neutral-900/80 px-3 py-2.5 text-sm font-medium text-amber-400/80 transition-colors hover:border-amber-500/50 hover:text-amber-300 hover:bg-neutral-800/80"
+        >
+          Ingresar oferta
+        </button>
+        <button
+          onClick={handleOpenModificar}
+          className="rounded-lg border border-amber-500/25 bg-neutral-900/80 px-3 py-2.5 text-sm font-medium text-amber-400/80 transition-colors hover:border-amber-500/50 hover:text-amber-300 hover:bg-neutral-800/80"
+        >
+          Modificar oferta
+        </button>
+        <Link
+          href="/postulaciones"
+          className="rounded-lg border border-amber-500/25 bg-neutral-900/80 px-3 py-2.5 text-sm font-medium text-amber-400/80 transition-colors hover:border-amber-500/50 hover:text-amber-300 hover:bg-neutral-800/80 text-center"
+        >
+          Postulaciones
+        </Link>
+        <Link
+          href="/ofertas"
+          className="rounded-lg border border-amber-500/25 bg-neutral-900/80 px-3 py-2.5 text-sm font-medium text-amber-400/80 transition-colors hover:border-amber-500/50 hover:text-amber-300 hover:bg-neutral-800/80 text-center"
+        >
+          Ofertas
+        </Link>
+        <Link
+          href="/bodega"
+          className="rounded-lg border border-amber-500/25 bg-neutral-900/80 px-3 py-2.5 text-sm font-medium text-amber-400/80 transition-colors hover:border-amber-500/50 hover:text-amber-300 hover:bg-neutral-800/80 text-center"
+        >
+          Bodega
+        </Link>
+        <Link
+          href="/perfil"
+          className="rounded-lg border border-amber-500/25 bg-neutral-900/80 px-3 py-2.5 text-sm font-medium text-amber-400/80 transition-colors hover:border-amber-500/50 hover:text-amber-300 hover:bg-neutral-800/80 text-center"
+        >
+          Perfil
+        </Link>
+        <Link
+          href="/"
+          className="rounded-lg border border-amber-500/25 bg-neutral-900/80 px-3 py-2.5 text-sm font-medium text-amber-400/80 transition-colors hover:border-amber-500/50 hover:text-amber-300 hover:bg-neutral-800/80 text-center"
+        >
+          Home
+        </Link>
       </div>
       <ModalIngresarOferta
         abierto={modalIngresarAbierto}
