@@ -4,12 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const links = [
-  { href: "/principal", label: "Página Principal" },
+  { href: "/principal", label: "Principal" },
   { href: "/", label: "Home" },
-  { href: "/bodega", label: "Bodega" },
-  { href: "/ofertas", label: "Ofertas" },
-  { href: "/postulaciones", label: "Postulaciones" },
+  { href: "/ofertas", label: "Todas las Ofertas" },
   { href: "/perfil", label: "Perfil" },
+  { href: "/bodega", label: "Metricas" },
+  { href: "/seguimientos", label: "Seguimientos" },
+  { href: "/postulaciones", label: "Postulaciones" },
 ];
 
 export default function Sidebar() {

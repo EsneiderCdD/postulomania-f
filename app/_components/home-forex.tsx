@@ -215,10 +215,12 @@ function OverlayBar(props: Record<string, unknown>) {
 }
 
 const links = [
-  { href: "/principal", label: "Página Principal" },
+  { href: "/principal", label: "Principal" },
   { href: "/", label: "Home" },
-  { href: "/bodega", label: "Bodega" },
-  { href: "/ofertas", label: "Ofertas" },
+  { href: "/ofertas", label: "Todas las Ofertas" },
+  { href: "/perfil", label: "Perfil" },
+  { href: "/bodega", label: "Metricas" },
+  { href: "/seguimientos", label: "Seguimientos" },
   { href: "/postulaciones", label: "Postulaciones" },
 ];
 
