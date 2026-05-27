@@ -122,36 +122,30 @@ export default function PanelPrincipal({
   return (
     <>
       <MapaWrapper data={mapa} />
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 px-1 mt-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 px-1 mt-4">
         <button
           onClick={handleOpenIngresar}
           className="rounded-lg border border-amber-500/25 bg-neutral-900/80 px-3 py-2.5 text-sm font-medium text-amber-400/80 transition-colors hover:border-amber-500/50 hover:text-amber-300 hover:bg-neutral-800/80"
         >
-          Ingresar oferta
+          Ingresar Oferta
         </button>
         <button
           onClick={handleOpenModificar}
           className="rounded-lg border border-amber-500/25 bg-neutral-900/80 px-3 py-2.5 text-sm font-medium text-amber-400/80 transition-colors hover:border-amber-500/50 hover:text-amber-300 hover:bg-neutral-800/80"
         >
-          Modificar oferta
+          Modificar Oferta
         </button>
-        <Link
-          href="/postulaciones"
-          className="rounded-lg border border-amber-500/25 bg-neutral-900/80 px-3 py-2.5 text-sm font-medium text-amber-400/80 transition-colors hover:border-amber-500/50 hover:text-amber-300 hover:bg-neutral-800/80 text-center"
-        >
-          Postulaciones
-        </Link>
         <Link
           href="/ofertas"
           className="rounded-lg border border-amber-500/25 bg-neutral-900/80 px-3 py-2.5 text-sm font-medium text-amber-400/80 transition-colors hover:border-amber-500/50 hover:text-amber-300 hover:bg-neutral-800/80 text-center"
         >
-          Ofertas
+          Todas las Ofertas
         </Link>
         <Link
-          href="/bodega"
+          href="/"
           className="rounded-lg border border-amber-500/25 bg-neutral-900/80 px-3 py-2.5 text-sm font-medium text-amber-400/80 transition-colors hover:border-amber-500/50 hover:text-amber-300 hover:bg-neutral-800/80 text-center"
         >
-          Bodega
+          Home
         </Link>
         <Link
           href="/perfil"
@@ -160,10 +154,22 @@ export default function PanelPrincipal({
           Perfil
         </Link>
         <Link
-          href="/"
+          href="/bodega"
           className="rounded-lg border border-amber-500/25 bg-neutral-900/80 px-3 py-2.5 text-sm font-medium text-amber-400/80 transition-colors hover:border-amber-500/50 hover:text-amber-300 hover:bg-neutral-800/80 text-center"
         >
-          Home
+          Metricas
+        </Link>
+        <Link
+          href="/seguimientos"
+          className="rounded-lg border border-amber-500/25 bg-neutral-900/80 px-3 py-2.5 text-sm font-medium text-amber-400/80 transition-colors hover:border-amber-500/50 hover:text-amber-300 hover:bg-neutral-800/80 text-center"
+        >
+          Seguimientos
+        </Link>
+        <Link
+          href="/postulaciones"
+          className="rounded-lg border border-amber-500/25 bg-neutral-900/80 px-3 py-2.5 text-sm font-medium text-amber-400/80 transition-colors hover:border-amber-500/50 hover:text-amber-300 hover:bg-neutral-800/80 text-center"
+        >
+          Postulaciones
         </Link>
       </div>
       <ModalIngresarOferta
