@@ -33,10 +33,10 @@ export default function OrigenExperienceVisual({
 }: {
   data: OrigenExperienceStats;
 }) {
-  const origins = Object.keys(data.promedio_por_origen);
+  const origins = Object.keys(data?.promedio_por_origen ?? {});
 
   const stackedRows = origins.map((origen) => {
-    const levels = data.distribucion_niveles_por_origen[origen] ?? {};
+    const levels = data?.distribucion_niveles_por_origen?.[origen] ?? {};
     return {
       origen,
       ...Object.fromEntries(
@@ -48,7 +48,7 @@ export default function OrigenExperienceVisual({
   return (
     <section className="w-full max-w-6xl rounded-2xl border border-white/10 bg-neutral-900 p-6 shadow-xl">
       <h1 className="mb-6 text-center text-3xl font-semibold tracking-tight text-white">
-        {data.metrica}
+        {data?.metrica ?? "—"}
       </h1>
 
       <div className="grid gap-4 md:grid-cols-3">
@@ -63,16 +63,16 @@ export default function OrigenExperienceVisual({
                 className="text-3xl font-semibold"
                 style={{ color: BRAND_CHART_COLORS[i % BRAND_CHART_COLORS.length] }}
               >
-                {data.promedio_por_origen[origen]}
+                {data?.promedio_por_origen?.[origen] ?? "—"}
               </span>
               <span className="text-sm text-neutral-500">años prom.</span>
             </div>
             <div className="mt-1 flex gap-4 text-xs text-neutral-500">
-              <span>Mediana: {data.mediana_por_origen[origen]}</span>
-              <span>Moda: {data.moda_por_origen[origen]}</span>
+              <span>Mediana: {data?.mediana_por_origen?.[origen] ?? "—"}</span>
+              <span>Moda: {data?.moda_por_origen?.[origen] ?? "—"}</span>
             </div>
             <p className="mt-2 text-xs text-neutral-600">
-              Entry level: {data.tasa_entry_level_por_origen[origen]}
+              Entry level: {data?.tasa_entry_level_por_origen?.[origen] ?? "—"}
             </p>
           </div>
         ))}

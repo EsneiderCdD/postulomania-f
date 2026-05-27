@@ -26,7 +26,7 @@ const DAY_LABELS: Record<string, string> = {
 };
 
 export default function EnglishTimingVisual({ data }: { data: EnglishTimingStats }) {
-  const keys = Object.keys(data.volumen_por_dia_por_ingles);
+  const keys = Object.keys(data?.volumen_por_dia_por_ingles ?? {});
 
   const allRows: Record<string, Record<string, number>> = {};
   keys.forEach((k) => {

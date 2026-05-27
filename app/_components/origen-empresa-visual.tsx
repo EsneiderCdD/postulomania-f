@@ -10,12 +10,12 @@ type OrigenEmpresaStats = {
 };
 
 export default function OrigenEmpresaVisual({ data }: { data: OrigenEmpresaStats }) {
-  const origins = Object.keys(data.empresas_identificadas_por_origen);
+  const origins = Object.keys(data?.empresas_identificadas_por_origen ?? {});
 
   return (
     <section className="w-full max-w-6xl rounded-2xl border border-white/10 bg-neutral-900 p-6 shadow-xl">
       <h1 className="mb-6 text-center text-3xl font-semibold tracking-tight text-white">
-        {data.metrica}
+        {data?.metrica ?? "—"}
       </h1>
 
       <div className="grid gap-4 md:grid-cols-3">
@@ -23,17 +23,17 @@ export default function OrigenEmpresaVisual({ data }: { data: OrigenEmpresaStats
           <div key={origen} className="rounded-xl border border-white/10 bg-neutral-950 p-4">
             <p className="text-sm text-neutral-400">{origen}</p>
             <p className="mt-1 text-3xl font-semibold text-white">
-              {data.empresas_identificadas_por_origen[origen]}
+              {data?.empresas_identificadas_por_origen?.[origen] ?? "—"}
             </p>
             <p className="text-xs text-neutral-500">empresas identificadas</p>
-            <p className="mt-3 text-xs text-neutral-400">Larga cola: {data.larga_cola_por_origen[origen]}</p>
+            <p className="mt-3 text-xs text-neutral-400">Larga cola: {data?.larga_cola_por_origen?.[origen] ?? "—"}</p>
           </div>
         ))}
       </div>
 
       <div className="mt-6 grid gap-6 md:grid-cols-3">
         {origins.map((origen, i) => {
-          const top3 = Object.entries(data.top_3_por_origen[origen] ?? {});
+          const top3 = Object.entries(data?.top_3_por_origen?.[origen] ?? {});
           return (
             <div key={origen} className="rounded-xl border border-white/10 bg-neutral-950 p-4">
               <h2 className="mb-2 text-sm font-medium text-neutral-300">{origen}</h2>

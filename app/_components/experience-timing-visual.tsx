@@ -28,8 +28,8 @@ export default function ExperienceTimingVisual({ data }: { data: ExperienceTimin
   const rows = DAY_ORDER.map((d) => ({
     day: DAY_LABELS[d],
     dayFull: d,
-    promedio: data.promedio_exp_por_dia[d] ?? 0,
-    mediana: data.mediana_exp_por_dia[d] ?? 0,
+    promedio: data?.promedio_exp_por_dia?.[d] ?? 0,
+    mediana: data?.mediana_exp_por_dia?.[d] ?? 0,
   }));
 
   return (

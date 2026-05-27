@@ -37,9 +37,9 @@ export default function TechStackVisual({ data }: { data: TechStackStats }) {
     .map(([pair, count]) => ({ pair, count }))
     .sort((a, b) => a.count - b.count);
 
-  const origins = Object.keys(data.tendencia_por_origen);
+  const origins = Object.keys(data?.tendencia_por_origen ?? {});
   const allTechs = Array.from(
-    new Set(origins.flatMap((o) => Object.keys(data.tendencia_por_origen[o])))
+    new Set(origins.flatMap((o) => Object.keys(data?.tendencia_por_origen?.[o] ?? {})))
   ).sort();
 
   const radarData = allTechs.map((tech) => {

@@ -26,7 +26,7 @@ const DAY_LABELS: Record<string, string> = {
 };
 
 export default function OrigenTimingVisual({ data }: { data: OrigenTimingStats }) {
-  const origins = Object.keys(data.volumen_por_dia_por_origen);
+  const origins = Object.keys(data?.volumen_por_dia_por_origen ?? {});
 
   const allRows: Record<string, Record<string, number>> = {};
   origins.forEach((o) => {

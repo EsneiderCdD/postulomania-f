@@ -50,47 +50,47 @@ export default function TimingVisual({ data }: { data: TimingStats }) {
   const dayRows = DAY_ORDER.map((day) => ({
     day: DAY_LABELS[day],
     dayFull: day,
-    count: data.volumen_por_dia[day] ?? 0,
+    count: data?.volumen_por_dia?.[day] ?? 0,
   }));
 
   const hourRows = HOURS.map((h) => {
     const key = `${String(h).padStart(2, "0")}:00`;
     return {
       hour: `${h}h`,
-      count: data.frecuencia_por_hora[key] ?? 0,
+      count: data?.frecuencia_por_hora?.[key] ?? 0,
     };
   });
 
   return (
     <section className="w-full max-w-6xl rounded-2xl border border-white/10 bg-neutral-900 p-6 shadow-xl">
       <h1 className="mb-6 text-center text-3xl font-semibold tracking-tight text-white">
-        {data.metrica}
+        {data?.metrica ?? "—"}
       </h1>
 
       <div className="grid gap-4 md:grid-cols-4">
         <div className="rounded-xl border border-white/10 bg-neutral-950 p-4">
           <p className="text-sm text-neutral-400">Últimas 24h</p>
           <p className="text-3xl font-semibold text-white">
-            {data.recencia.ultimas_24h}
+            {data?.recencia?.ultimas_24h ?? "—"}
           </p>
         </div>
         <div className="rounded-xl border border-white/10 bg-neutral-950 p-4">
           <p className="text-sm text-neutral-400">Últimas 48h</p>
           <p className="text-3xl font-semibold text-white">
-            {data.recencia.ultimas_48h}
+            {data?.recencia?.ultimas_48h ?? "—"}
           </p>
         </div>
         <div className="rounded-xl border border-white/10 bg-neutral-950 p-4">
           <p className="text-sm text-neutral-400">Antigüedad máxima</p>
           <p className="text-3xl font-semibold text-white">
-            {data.antiguedad_maxima_dias}
+            {data?.antiguedad_maxima_dias ?? "—"}
           </p>
           <p className="mt-1 text-xs text-neutral-500">días</p>
         </div>
         <div className="rounded-xl border border-white/10 bg-neutral-950 p-4">
           <p className="text-sm text-neutral-400">Día pico</p>
           <p className="text-3xl font-semibold text-white">
-            {data.dia_pico_absoluto}
+            {data?.dia_pico_absoluto ?? "—"}
           </p>
         </div>
       </div>
@@ -98,7 +98,7 @@ export default function TimingVisual({ data }: { data: TimingStats }) {
       <div className="mt-4 rounded-xl border border-white/10 bg-neutral-950 p-4">
         <p className="text-sm text-neutral-400">Fuga fin de semana</p>
         <p className="text-3xl font-semibold text-white">
-          {data.fuga_fin_de_semana}
+          {data?.fuga_fin_de_semana ?? "—"}
         </p>
       </div>
 
