@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { searchOfertas, getOferta, updateOferta } from "../actions";
 import type { OfertaSearchItem, OfertaCompleta } from "../actions";
 import FormOfertaCampos, { CAMPOS_INITIAL } from "./form-oferta-campos";
@@ -188,7 +189,7 @@ export default function ModalModificarOferta({
     ? { onClick: onClose }
     : {};
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto py-10"
       {...overlayProps}
@@ -337,6 +338,7 @@ export default function ModalModificarOferta({
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.getElementById("modal-root")!
   );
 }

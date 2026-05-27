@@ -26,6 +26,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={`${exo.variable} ${amaticSC.variable} bg-neutral-950 text-neutral-100 font-exo`}>
+        <div id="modal-root" />
         {children}
       </body>
     </html>
