@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { createPostulacion, deletePostulacion, deleteOferta } from "../actions";
@@ -71,11 +71,25 @@ export default function OfertasTabla({
   postulaciones,
   onSeguirEmpresa,
   seguimientoIds,
+  orderBy,
+  orderDir,
+  onSort,
+  total,
+  page,
+  pageSize,
+  onPageChange,
 }: {
   ofertas: Oferta[];
   postulaciones: PostulacionProp[];
   onSeguirEmpresa?: (empresaId: number) => void;
   seguimientoIds?: Set<number>;
+  orderBy?: string;
+  orderDir?: string;
+  onSort?: (field: string) => void;
+  total?: number;
+  page?: number;
+  pageSize?: number;
+  onPageChange?: (page: number) => void;
 }) {
   const router = useRouter();
   const [applied, setApplied] = useState(() => {
@@ -135,7 +149,41 @@ export default function OfertasTabla({
     setConfirmDeleteId(null);
   }, []);
 
-  if (ofertas.length === 0) {
+  const totalPages = useMemo(
+    () => (total != null && pageSize != null ? Math.max(1, Math.ceil(total / pageSize)) : 1),
+    [total, pageSize],
+  );
+
+  const showPagination = total != null && page != null && pageSize != null && onPageChange != null;
+
+  const sortArrow = (field: string) => {
+    if (!onSort) return null;
+    if (orderBy !== field) return <span className="ml-1 text-neutral-600">⇅</span>;
+    return orderDir === "asc" ? <span className="ml-1 text-amber-400">↑</span> : <span className="ml-1 text-amber-400">↓</span>;
+  };
+
+  const sortableHeader = (field: string, label: string, align: string) => {
+    if (!onSort) {
+      return (
+        <th className={`px-4 py-3 font-medium ${align}`}>
+          <span className="text-xs uppercase tracking-wider text-neutral-400">{label}</span>
+        </th>
+      );
+    }
+    return (
+      <th className={`px-4 py-3 font-medium ${align}`}>
+        <button
+          onClick={() => onSort(field)}
+          className="inline-flex items-center gap-0.5 text-xs uppercase tracking-wider text-neutral-400 hover:text-neutral-200 transition-colors cursor-pointer"
+        >
+          {label}
+          {sortArrow(field)}
+        </button>
+      </th>
+    );
+  };
+
+  if (showPagination ? total === 0 : ofertas.length === 0) {
     return (
       <div className="flex items-center justify-center py-20 text-neutral-500">
         Sin ofertas disponibles
@@ -152,10 +200,10 @@ export default function OfertasTabla({
               Título
             </th>
             <th className="px-4 py-3 font-medium">Empresa</th>
-            <th className="px-4 py-3 font-medium text-center">Compatibilidad</th>
-            <th className="px-4 py-3 font-medium">Extracción</th>
+            {sortableHeader("compatibilidad", "Compatibilidad", "text-center")}
+            {sortableHeader("fecha_extraccion", "Extracción", "text-left")}
             <th className="px-4 py-3 font-medium">Origen</th>
-            <th className="px-4 py-3 font-medium text-center">Exp.</th>
+            {sortableHeader("experiencia_anios", "Exp.", "text-center")}
             <th className="px-4 py-3 font-medium text-center">Inglés</th>
             <th className="px-4 py-3 font-medium text-center">Acción</th>
           </tr>
@@ -178,6 +226,9 @@ export default function OfertasTabla({
                     rel="noopener noreferrer"
                     className="text-blue-400 hover:text-blue-300 hover:underline"
                   >
+                    <span className="text-neutral-600 font-medium">
+                      #{showPagination ? (page! - 1) * pageSize! + i + 1 : i + 1} - #{oferta.id}:
+                    </span>{" "}
                     {oferta.titulo}
                   </a>
                 </td>
@@ -271,6 +322,33 @@ export default function OfertasTabla({
           })}
         </tbody>
       </table>
+
+      {showPagination && (
+        <div className="flex items-center justify-between border-t border-white/10 px-4 py-3">
+          <span className="text-xs text-neutral-500">
+            {total} oferta{total !== 1 ? "s" : ""}
+          </span>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => onPageChange!(page! - 1)}
+              disabled={page! <= 1}
+              className="rounded border border-white/10 px-3 py-1 text-xs text-neutral-400 hover:border-white/30 hover:text-neutral-200 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            >
+              Anterior
+            </button>
+            <span className="text-xs text-neutral-400">
+              Página {page} de {totalPages}
+            </span>
+            <button
+              onClick={() => onPageChange!(page! + 1)}
+              disabled={page! >= totalPages}
+              className="rounded border border-white/10 px-3 py-1 text-xs text-neutral-400 hover:border-white/30 hover:text-neutral-200 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            >
+              Siguiente
+            </button>
+          </div>
+        </div>
+      )}
 
       {confirmDeleteId != null &&
         createPortal(

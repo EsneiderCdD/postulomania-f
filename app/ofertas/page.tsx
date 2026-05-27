@@ -16,6 +16,8 @@ type Oferta = {
 
 type OfertasResponse = {
   total: number;
+  page: number;
+  page_size: number;
   ofertas: Oferta[];
 };
 

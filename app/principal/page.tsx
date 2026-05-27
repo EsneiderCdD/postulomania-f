@@ -17,6 +17,8 @@ type Oferta = {
 
 type OfertasResponse = {
   total: number;
+  page: number;
+  page_size: number;
   ofertas: Oferta[];
 };
 
@@ -73,7 +75,7 @@ async function fetchMapaOfertas(): Promise<MapaResponse> {
 export default async function Principal() {
   const [mapa, ofertasData, postulacionesData] = await Promise.all([
     fetchMapaOfertas(),
-    fetchApi<OfertasResponse>("/api/v1/ofertas"),
+    fetchApi<OfertasResponse>("/api/v1/ofertas?order_by=fecha_extraccion&order_dir=desc&page=1&page_size=15"),
     fetchApi<PostulacionesResponse>("/api/v1/postulaciones"),
   ]);
   return (
@@ -95,7 +97,7 @@ export default async function Principal() {
           <div className="mt-8 w-full space-y-6">
             <PanelPrincipal
               mapa={mapa}
-              ofertas={ofertasData.ofertas}
+              ofertasInicial={ofertasData}
               postulaciones={postulacionesData.postulaciones}
             />
           </div>
