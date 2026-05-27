@@ -169,6 +169,45 @@ export async function searchOfertas(q: string): Promise<OfertaSearchItem[]> {
   return data.ofertas ?? [];
 }
 
+export type OfertasPaginatedResponse = {
+  total: number;
+  page: number;
+  page_size: number;
+  ofertas: {
+    id: number;
+    id_oferta: string;
+    titulo: string;
+    enlace: string;
+    descripcion: string | null;
+    fecha_publicacion_estimada: string | null;
+    fecha_extraccion: string;
+    experiencia_anios: number | null;
+    requiere_ingles: boolean;
+    keyword: string | null;
+    origen_proceso: string;
+    empresa_id: number | null;
+    empresa: string | null;
+    compatibilidad: number;
+    tecnologias: string[];
+  }[];
+};
+
+export async function fetchOfertasPaginated(
+  orderBy: string,
+  orderDir: string,
+  page: number,
+  pageSize: number,
+): Promise<OfertasPaginatedResponse | null> {
+  const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
+  const url = `${baseUrl}/api/v1/ofertas?order_by=${encodeURIComponent(orderBy)}&order_dir=${encodeURIComponent(orderDir)}&page=${page}&page_size=${pageSize}`;
+  const res = await fetch(url);
+  if (!res.ok) {
+    console.error(`[fetchOfertasPaginated] HTTP ${res.status}`);
+    return null;
+  }
+  return res.json();
+}
+
 export type EmpresaSearchItem = {
   id: number;
   nombre: string;

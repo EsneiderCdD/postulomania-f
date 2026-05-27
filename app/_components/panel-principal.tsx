@@ -9,6 +9,8 @@ import TablaEmpresas from "./tabla-empresas";
 import OfertasTabla from "./ofertas-tabla";
 import ModalIngresarOferta from "./modal-ingresar-oferta";
 import ModalModificarOferta from "./modal-modificar-oferta";
+import type { OfertasPaginatedResponse } from "../actions";
+import { fetchOfertasPaginated } from "../actions";
 
 type Oferta = {
   id: number;
@@ -42,8 +44,6 @@ type PostulacionItem = {
   estado_proceso: string;
 };
 
-const API_BASE = process.env.NEXT_PUBLIC_BACKEND_API_URL ?? "http://127.0.0.1:8000";
-
 export default function PanelPrincipal({
   mapa,
   ofertasInicial,
@@ -65,16 +65,8 @@ export default function PanelPrincipal({
 
   const fetchOfertas = useCallback(
     async (ob: string, od: string, p: number) => {
-      try {
-        const url = `${API_BASE}/api/v1/ofertas?order_by=${ob}&order_dir=${od}&page=${p}&page_size=15`;
-        const res = await fetch(url);
-        if (res.ok) {
-          const data: OfertasResponse = await res.json();
-          setOfertasData(data);
-        }
-      } catch (err) {
-        console.error("[fetchOfertas]", err);
-      }
+      const data = await fetchOfertasPaginated(ob, od, p, 15);
+      if (data) setOfertasData(data);
     },
     [],
   );
