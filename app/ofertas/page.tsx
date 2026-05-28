@@ -1,4 +1,4 @@
-import OfertasTabla from "../_components/ofertas-tabla";
+import OfertasClientPage from "./ofertas-client-page";
 
 type Oferta = {
   id: number;
@@ -56,7 +56,7 @@ async function fetchApi<T>(path: string): Promise<T> {
 
 export default async function OfertasPage() {
   const [ofertasData, postulacionesData] = await Promise.all([
-    fetchApi<OfertasResponse>("/api/v1/ofertas"),
+    fetchApi<OfertasResponse>("/api/v1/ofertas?order_by=fecha_extraccion&order_dir=desc&page=1&page_size=15"),
     fetchApi<PostulacionesResponse>("/api/v1/postulaciones"),
   ]);
 
@@ -70,13 +70,9 @@ export default async function OfertasPage() {
           <p className="mb-6 text-center text-sm text-neutral-500">
             {ofertasData.total} ofertas capturadas
           </p>
-          <OfertasTabla
-            ofertas={ofertasData.ofertas}
-            postulaciones={postulacionesData.postulaciones.map((p) => ({
-              id: p.id,
-              oferta_id: p.oferta_id,
-              estado_proceso: p.estado_proceso,
-            }))}
+          <OfertasClientPage
+            ofertasInicial={ofertasData}
+            postulaciones={postulacionesData.postulaciones}
           />
         </section>
       </div>
