@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   Bar,
   BarChart,
@@ -11,6 +12,12 @@ import {
   YAxis,
 } from "recharts";
 import { BRAND_CHART_COLORS } from "../_components/chart-colors";
+
+const canalesContacto = [
+  { key: "correo", label: "Correo", icon: "✉" },
+  { key: "red-social", label: "Red Social", icon: "👤" },
+  { key: "telefono", label: "Teléfono", icon: "📞" },
+];
 
 const empresas = [
   { id: 21, nombre: "Agencia De Empleo Comfama" },
@@ -40,7 +47,13 @@ const techData = [
 ];
 
 export default function SeguimientosPanel() {
+  const [contactoActivo, setContactoActivo] = useState<string | null>(null);
+
+  const contactoTitulo =
+    canalesContacto.find((c) => c.key === contactoActivo)?.label ?? "";
+
   return (
+    <div className="flex flex-col gap-6">
     <section className="flex gap-6">
       <div className="flex w-64 shrink-0 flex-col gap-2">
         {empresas.map((empresa) => (
@@ -175,5 +188,49 @@ export default function SeguimientosPanel() {
         </div>
       </div>
     </section>
+
+    <section className="flex gap-6">
+      <div className="flex w-64 shrink-0 flex-col gap-2">
+        <h3 className="mb-1 text-xs font-medium uppercase tracking-wider text-neutral-500 px-1">
+          Contactar
+        </h3>
+        {canalesContacto.map((canal) => (
+          <button
+            key={canal.key}
+            onClick={() =>
+              setContactoActivo(contactoActivo === canal.key ? null : canal.key)
+            }
+            className={`rounded-xl border px-5 py-4 text-left transition-colors ${
+              contactoActivo === canal.key
+                ? "border-amber-500/40 bg-amber-500/5 text-amber-300"
+                : "border-white/10 bg-neutral-950 text-white hover:border-white/20 hover:bg-neutral-900/80"
+            }`}
+          >
+            <span className="text-sm font-medium">
+              {canal.icon} {canal.label}
+            </span>
+          </button>
+        ))}
+      </div>
+
+      <div className="min-h-[300px] flex-1 rounded-2xl border border-white/10 bg-neutral-900">
+        {contactoActivo ? (
+          <div className="flex flex-col">
+            <div className="border-b border-white/10 px-6 py-5">
+              <h3 className="text-lg font-semibold text-white">
+                {contactoTitulo}
+              </h3>
+            </div>
+            <div className="min-h-[200px] px-6 py-6" />
+          </div>
+        ) : (
+          <div className="flex h-full min-h-[300px] items-center justify-center text-sm text-neutral-600">
+            Selecciona un canal de contacto
+          </div>
+        )}
+      </div>
+    </section>
+
+    </div>
   );
 }
