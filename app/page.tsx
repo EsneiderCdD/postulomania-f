@@ -79,6 +79,118 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Base de datos section */}
+      <section className="relative py-24">
+        <div className="mx-auto w-[98%] max-w-[1333px]">
+          <div className="rounded-3xl border border-white/5 bg-neutral-900">
+            <div className="grid grid-cols-5 h-[400px] md:h-[500px]">
+              <div className="col-span-2 flex items-center justify-center p-6">
+                <img
+                  src="/images/basedatos.png"
+                  alt="Base de datos"
+                  className="w-full max-w-xs md:max-w-sm object-contain"
+                />
+              </div>
+
+              <div className="col-span-3 col-start-3 flex flex-col items-end justify-center gap-6 px-4">
+                <h2 className="hero-title text-4xl md:text-5xl">
+                  Almacenamiento Base de Datos
+                </h2>
+
+                <p className="self-start text-left text-base md:text-lg leading-relaxed text-neutral-400 max-w-xl md:max-w-2xl font-[system-ui] ml-6 md:ml-10">
+                  Limpieza, depuración, extracción de los datos y
+                  almacenamiento en PostgreSQL.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Compatibilidad section */}
+      <section className="relative py-24">
+        <div className="mx-auto w-[98%] max-w-[1333px]">
+          <div className="rounded-3xl border border-white/5 bg-neutral-900">
+            <div className="grid grid-cols-5 h-[400px] md:h-[500px]">
+              <div className="col-span-2 flex items-center justify-center p-6">
+                <img
+                  src="/images/compatibilidad.png"
+                  alt="Compatibilidad"
+                  className="w-full max-w-xs md:max-w-sm object-contain"
+                />
+              </div>
+
+              <div className="col-span-3 col-start-3 flex flex-col items-end justify-center gap-6 px-4">
+                <h2 className="hero-title text-4xl md:text-5xl">
+                  Compatibilidad
+                </h2>
+
+                <p className="self-start text-left text-base md:text-lg leading-relaxed text-neutral-400 max-w-xl md:max-w-2xl font-[system-ui] ml-6 md:ml-10">
+                  Extracción de perfil psicotécnico y de requisitos técnicos
+                  para una lectura y comparativa rápida del mercado.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Contactar section */}
+      <section className="relative py-24">
+        <div className="mx-auto w-[98%] max-w-[1333px]">
+          <div className="rounded-3xl border border-white/5 bg-neutral-900">
+            <div className="grid grid-cols-5 h-[400px] md:h-[500px]">
+              <div className="col-span-2 flex items-center justify-center p-6">
+                <img
+                  src="/images/contactar.png"
+                  alt="Contactar"
+                  className="w-full max-w-xs md:max-w-sm object-contain"
+                />
+              </div>
+
+              <div className="col-span-3 col-start-3 flex flex-col items-end justify-center gap-6 px-4">
+                <h2 className="hero-title text-4xl md:text-5xl">
+                  Contactar
+                </h2>
+
+                <p className="self-start text-left text-base md:text-lg leading-relaxed text-neutral-400 max-w-xl md:max-w-2xl font-[system-ui] ml-6 md:ml-10">
+                  Genera un estudio de mercado basado en los datos, y encuentra
+                  una empresa / oferta seria, y con aspiraciones y proyecciones
+                  reales.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Estrategias section */}
+      <section className="relative py-24">
+        <div className="mx-auto w-[98%] max-w-[1333px]">
+          <div className="rounded-3xl border border-white/5 bg-neutral-900">
+            <div className="grid grid-cols-5 h-[400px] md:h-[500px]">
+              <div className="col-span-2 flex items-center justify-center p-6">
+                <div className="w-full max-w-xs md:max-w-sm aspect-square rounded-2xl border border-dashed border-white/10 flex items-center justify-center text-neutral-600 text-sm">
+                  imagen
+                </div>
+              </div>
+
+              <div className="col-span-3 col-start-3 flex flex-col items-end justify-center gap-6 px-4">
+                <h2 className="hero-title text-4xl md:text-5xl">
+                  Estrategias
+                </h2>
+
+                <p className="self-start text-left text-base md:text-lg leading-relaxed text-neutral-400 max-w-xl md:max-w-2xl font-[system-ui] ml-6 md:ml-10">
+                  Organiza tu CV, estrategias e información para contactar y
+                  analizar tus postulaciones frente a una oferta de manera más
+                  detallada.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
