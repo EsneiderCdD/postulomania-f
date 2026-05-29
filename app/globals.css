@@ -10,11 +10,18 @@
 
 .hero-title {
   font-family: var(--font-exo);
-  font-weight: 700;
-  letter-spacing: 0.175em;
+  font-weight: 900;
+  letter-spacing: 0.075em;
   line-height: 1.2;
-  color: #fff;
   text-transform: uppercase;
+  background-image: url('/images/arbusto_doble.png');
+ 
+  background-size: 120%;
+  background-position: center;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text; 
+  background-clip: text;
+  color: transparent; 
 }
 
 .hero-subtitle {

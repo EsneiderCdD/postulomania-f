@@ -23,7 +23,7 @@ export default function Home() {
       <div className="relative z-10 mx-auto w-[98%] max-w-[1333px] min-h-screen rounded-3xl border border-white/5 bg-neutral-900">
         <div className="grid grid-cols-5 grid-rows-5 min-h-screen">
           <div className="col-span-5 row-span-2 flex items-center justify-center">
-            <h1 className="hero-title text-7xl md:text-8xl">
+            <h1 className="hero-title text-8xl md:text-9xl">
               Postulomaniaco
             </h1>
           </div>
