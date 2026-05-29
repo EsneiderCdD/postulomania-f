@@ -21,12 +21,12 @@ export default function Home() {
             </h1>
           </div>
 
-          <div className="col-span-3 row-span-3 col-start-3 row-start-3 flex flex-col items-center justify-center gap-6 px-4">
-            <p className="hero-subtitle text-center text-3xl md:text-4xl">
+          <div className="col-span-3 row-span-3 col-start-3 row-start-3 flex flex-col items-end justify-start gap-6 px-4">
+            <p className="hero-subtitle text-right text-5xl md:text-6xl">
               SOFWARE DE EXTRACCION Y GESTION DE VACANTES
             </p>
 
-            <p className="text-center text-sm leading-relaxed text-neutral-400 max-w-md font-[system-ui]">
+            <p className="self-start text-left text-base md:text-lg leading-relaxed text-neutral-400 max-w-xl md:max-w-2xl font-[system-ui] ml-6 md:ml-10">
               Herramienta integral para la búsqueda, extracción y seguimiento de
               ofertas laborales en el ecosistema tech de Antioquia.
             </p>
