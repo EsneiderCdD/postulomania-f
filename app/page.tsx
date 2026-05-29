@@ -1,13 +1,4 @@
-import Link from "next/link";
-
-const links = [
-  { href: "/principal", label: "Principal" },
-  { href: "/ofertas", label: "Todas las Ofertas" },
-  { href: "/perfil", label: "Perfil" },
-  { href: "/bodega", label: "Metricas" },
-  { href: "/seguimientos", label: "Seguimientos" },
-  { href: "/postulaciones", label: "Postulaciones" },
-];
+import Navbar from "./_reusable/navbar";
 
 export default function Home() {
   return (
@@ -21,6 +12,8 @@ export default function Home() {
       />
 
       <div className="relative z-10 mx-auto w-[98%] max-w-[1333px] min-h-screen rounded-3xl border border-white/5 bg-neutral-900">
+        <Navbar />
+
         <div className="grid grid-cols-5 grid-rows-5 min-h-screen">
           <div className="col-span-5 row-span-2 flex items-center justify-center">
             <h1 className="hero-title text-8xl md:text-9xl">
@@ -37,14 +30,6 @@ export default function Home() {
               Herramienta integral para la búsqueda, extracción y seguimiento de
               ofertas laborales en el ecosistema tech de Antioquia.
             </p>
-
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              {links.map(({ href, label }) => (
-                <Link key={href} href={href} className="btn-secondary">
-                  {label}
-                </Link>
-              ))}
-            </div>
           </div>
 
           <div className="col-span-2 row-span-3 row-start-3 relative">
