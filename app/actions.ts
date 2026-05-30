@@ -285,3 +285,67 @@ export async function toggleSeguimiento(empresaId: number, enSeguimiento: boolea
   }
   return res.json();
 }
+
+export type SeguimientoEmpresa = {
+  id: number;
+  nombre: string;
+  tipo: string | null;
+  foto_url: string | null;
+};
+
+export async function getSeguimientosEmpresas(): Promise<SeguimientoEmpresa[]> {
+  const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
+  const res = await fetch(`${baseUrl}/api/v1/seguimientos/empresas`);
+  if (!res.ok) return [];
+  const data = await res.json();
+  return data.empresas ?? [];
+}
+
+export type SeguimientoOferta = {
+  id: number;
+  titulo: string;
+  enlace: string | null;
+  compatibilidad: number | null;
+  postulado: boolean;
+};
+
+export type SeguimientoTech = {
+  tech: string;
+  ofertas: number;
+};
+
+export type SeguimientoDetail = {
+  empresa: {
+    id: number;
+    nombre: string;
+    tipo: string | null;
+    foto_url: string | null;
+  };
+  ofertas: SeguimientoOferta[];
+  tecnologias: SeguimientoTech[];
+};
+
+export async function getSeguimientoDetail(empresaId: number): Promise<SeguimientoDetail | null> {
+  const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
+  const res = await fetch(`${baseUrl}/api/v1/seguimientos/${empresaId}`);
+  if (!res.ok) {
+    console.error(`[getSeguimientoDetail] HTTP ${res.status}`);
+    return null;
+  }
+  return res.json();
+}
+
+export async function setEmpresaTipo(empresaId: number, tipo: string) {
+  const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
+  const res = await fetch(`${baseUrl}/api/v1/empresas/${empresaId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ tipo }),
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    console.error(`[setEmpresaTipo] HTTP ${res.status}: ${body}`);
+    return null;
+  }
+  return res.json();
+}
