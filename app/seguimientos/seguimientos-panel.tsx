@@ -32,10 +32,23 @@ const AVATAR_COLORS = [
 ];
 
 const canalesContacto = [
+  { key: "telefono", label: "Teléfono", icon: "📞" },
   { key: "correo", label: "Correo", icon: "✉" },
   { key: "red-social", label: "Red Social", icon: "👤" },
-  { key: "telefono", label: "Teléfono", icon: "📞" },
 ];
+
+type FormFields = {
+  [canal: string]: {
+    numero?: string;
+    email?: string;
+    asunto?: string;
+    usuario?: string;
+    tipoMensaje?: "texto" | "nota-voz";
+    speech?: string;
+    contenido?: string;
+    notas?: string;
+  };
+};
 
 function avatarBg(id: number) {
   return AVATAR_COLORS[id % AVATAR_COLORS.length];
@@ -46,7 +59,10 @@ export default function SeguimientosPanel() {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [detail, setDetail] = useState<SeguimientoDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
-  const [contactoActivo, setContactoActivo] = useState<string | null>(null);
+  const [canalesActivos, setCanalesActivos] = useState<Record<string, boolean>>(
+    {}
+  );
+  const [formData, setFormData] = useState<FormFields>({});
 
   useEffect(() => {
     getSeguimientosEmpresas().then((data) => {
@@ -84,8 +100,35 @@ export default function SeguimientosPanel() {
     [selectedId]
   );
 
-  const contactoTitulo =
-    canalesContacto.find((c) => c.key === contactoActivo)?.label ?? "";
+  const toggleCanal = useCallback((key: string) => {
+    setCanalesActivos((prev) => {
+      const next = { ...prev, [key]: !prev[key] };
+      if (!next[key]) {
+        setFormData((f) => {
+          const copy = { ...f };
+          delete copy[key];
+          return copy;
+        });
+      } else {
+        setFormData((f) => ({
+          ...f,
+          [key]: f[key] ?? {},
+        }));
+      }
+      return next;
+    });
+  }, []);
+
+  const updateFormField = (
+    canal: string,
+    field: string,
+    value: string
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      [canal]: { ...(prev[canal] ?? {}), [field]: value },
+    }));
+  };
 
   const empresaActual = detail?.empresa ?? null;
 
@@ -316,45 +359,291 @@ export default function SeguimientosPanel() {
       </section>
 
       {/* --- CONTACT SECTION --- */}
-      <section className="flex gap-6">
-        <div className="flex w-64 shrink-0 flex-col gap-2">
-          <h3 className="mb-1 px-1 text-xs font-medium uppercase tracking-wider text-neutral-500">
+      <section className="rounded-2xl border border-white/10 bg-neutral-900">
+        <div className="flex items-center gap-6 border-b border-white/10 px-6 py-4">
+          <h3 className="text-xs font-medium uppercase tracking-wider text-neutral-500">
             Contactar
           </h3>
-          {canalesContacto.map((canal) => (
-            <button
-              key={canal.key}
-              onClick={() =>
-                setContactoActivo(
-                  contactoActivo === canal.key ? null : canal.key
-                )
-              }
-              className={`rounded-xl border px-5 py-4 text-left transition-colors ${
-                contactoActivo === canal.key
-                  ? "border-amber-500/40 bg-amber-500/5 text-amber-300"
-                  : "border-white/10 bg-neutral-950 text-white hover:border-white/20 hover:bg-neutral-900/80"
-              }`}
-            >
-              <span className="text-sm font-medium">
+          <div className="flex gap-2">
+            {canalesContacto.map((canal) => (
+              <button
+                key={canal.key}
+                onClick={() => toggleCanal(canal.key)}
+                className={`rounded-lg border px-4 py-2 text-sm transition-colors ${
+                  canalesActivos[canal.key]
+                    ? "border-amber-500/40 bg-amber-500/5 text-amber-300"
+                    : "border-white/10 text-neutral-400 hover:border-white/30 hover:text-neutral-200"
+                }`}
+              >
                 {canal.icon} {canal.label}
-              </span>
-            </button>
-          ))}
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className="min-h-[300px] flex-1 rounded-2xl border border-white/10 bg-neutral-900">
-          {contactoActivo ? (
-            <div className="flex flex-col">
-              <div className="border-b border-white/10 px-6 py-5">
-                <h3 className="text-lg font-semibold text-white">
-                  {contactoTitulo}
-                </h3>
-              </div>
-              <div className="min-h-[200px] px-6 py-6" />
-            </div>
+        <div className="px-6 py-6">
+          {Object.keys(canalesActivos).length === 0 ||
+          Object.values(canalesActivos).every((v) => !v) ? (
+            <p className="py-8 text-center text-sm text-neutral-600">
+              Activa un canal de contacto para empezar
+            </p>
           ) : (
-            <div className="flex h-full min-h-[300px] items-center justify-center text-sm text-neutral-600">
-              Selecciona un canal de contacto
+            <div className="flex flex-col gap-8">
+              {/* ---- Teléfono ---- */}
+              {canalesActivos["telefono"] && (
+                <div>
+                  <h4 className="mb-4 flex items-center gap-2 text-sm font-medium text-amber-300">
+                    <span>📞</span> Teléfono
+                  </h4>
+                  <div className="grid gap-4">
+                    <div>
+                      <label className="mb-1.5 block text-xs text-neutral-500">
+                        Número de teléfono
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="+57 300 123 4567"
+                        value={formData["telefono"]?.numero ?? ""}
+                        onChange={(e) =>
+                          updateFormField("telefono", "numero", e.target.value)
+                        }
+                        className="w-full rounded-lg border border-white/10 bg-neutral-950 px-4 py-2.5 text-sm text-white placeholder-neutral-600 outline-none transition-colors focus:border-amber-500/40"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1.5 block text-xs text-neutral-500">
+                        Guión / Orator speech
+                      </label>
+                      <p className="mb-2 text-[11px] text-neutral-600">
+                        Preparar un speech de máximo 2 minutos — qué vas a
+                        decir, puntos clave a mencionar.
+                      </p>
+                      <textarea
+                        rows={4}
+                        placeholder="Ej: Presentarme, mencionar experiencia en React y Python, preguntar por el proceso de selección…"
+                        value={formData["telefono"]?.speech ?? ""}
+                        onChange={(e) =>
+                          updateFormField("telefono", "speech", e.target.value)
+                        }
+                        className="w-full rounded-lg border border-white/10 bg-neutral-950 px-4 py-2.5 text-sm text-white placeholder-neutral-600 outline-none transition-colors focus:border-amber-500/40 resize-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1.5 block text-xs text-neutral-500">
+                        Adjuntar CV personalizado
+                      </label>
+                      <div className="flex items-center gap-3 rounded-lg border border-dashed border-white/15 bg-neutral-950 px-4 py-3">
+                        <span className="text-sm text-neutral-500">📎</span>
+                        <span className="text-sm text-neutral-600">
+                          Seleccionar archivo (PDF, DOCX)
+                        </span>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="mb-1.5 block text-xs text-neutral-500">
+                        Notas adicionales
+                      </label>
+                      <textarea
+                        rows={3}
+                        placeholder="Resultado de la llamada, observaciones, seguimiento pendiente…"
+                        value={formData["telefono"]?.notas ?? ""}
+                        onChange={(e) =>
+                          updateFormField("telefono", "notas", e.target.value)
+                        }
+                        className="w-full rounded-lg border border-white/10 bg-neutral-950 px-4 py-2.5 text-sm text-white placeholder-neutral-600 outline-none transition-colors focus:border-amber-500/40 resize-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ---- Correo ---- */}
+              {canalesActivos["correo"] && (
+                <div>
+                  <h4 className="mb-4 flex items-center gap-2 text-sm font-medium text-amber-300">
+                    <span>✉</span> Correo
+                  </h4>
+                  <div className="grid gap-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="mb-1.5 block text-xs text-neutral-500">
+                          Correo de la empresa
+                        </label>
+                        <input
+                          type="email"
+                          placeholder="rrhh@empresa.com"
+                          value={formData["correo"]?.email ?? ""}
+                          onChange={(e) =>
+                            updateFormField("correo", "email", e.target.value)
+                          }
+                          className="w-full rounded-lg border border-white/10 bg-neutral-950 px-4 py-2.5 text-sm text-white placeholder-neutral-600 outline-none transition-colors focus:border-amber-500/40"
+                        />
+                      </div>
+                      <div>
+                        <label className="mb-1.5 block text-xs text-neutral-500">
+                          Tu correo
+                        </label>
+                        <input
+                          type="email"
+                          placeholder="tu@email.com"
+                          className="w-full rounded-lg border border-white/10 bg-neutral-950 px-4 py-2.5 text-sm text-white placeholder-neutral-600 outline-none transition-colors focus:border-amber-500/40"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="mb-1.5 block text-xs text-neutral-500">
+                        Asunto
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Ej: Postulación — Desarrollador de Software"
+                        value={formData["correo"]?.asunto ?? ""}
+                        onChange={(e) =>
+                          updateFormField("correo", "asunto", e.target.value)
+                        }
+                        className="w-full rounded-lg border border-white/10 bg-neutral-950 px-4 py-2.5 text-sm text-white placeholder-neutral-600 outline-none transition-colors focus:border-amber-500/40"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1.5 block text-xs text-neutral-500">
+                        Contenido del correo
+                      </label>
+                      <textarea
+                        rows={6}
+                        placeholder="Escribe el cuerpo del correo aquí…"
+                        value={formData["correo"]?.contenido ?? ""}
+                        onChange={(e) =>
+                          updateFormField("correo", "contenido", e.target.value)
+                        }
+                        className="w-full rounded-lg border border-white/10 bg-neutral-950 px-4 py-2.5 text-sm text-white placeholder-neutral-600 outline-none transition-colors focus:border-amber-500/40 resize-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1.5 block text-xs text-neutral-500">
+                        Adjuntar CV personalizado
+                      </label>
+                      <div className="flex items-center gap-3 rounded-lg border border-dashed border-white/15 bg-neutral-950 px-4 py-3">
+                        <span className="text-sm text-neutral-500">📎</span>
+                        <span className="text-sm text-neutral-600">
+                          Seleccionar archivo (PDF, DOCX)
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ---- Red Social ---- */}
+              {canalesActivos["red-social"] && (
+                <div>
+                  <h4 className="mb-4 flex items-center gap-2 text-sm font-medium text-amber-300">
+                    <span>👤</span> Red Social
+                  </h4>
+                  <div className="grid gap-4">
+                    <div className="flex items-center gap-3 rounded-lg border border-white/10 bg-neutral-950 px-4 py-2.5">
+                      <span className="text-sm text-neutral-500">Plataforma:</span>
+                      <span className="text-sm font-medium text-neutral-300">
+                        Instagram
+                      </span>
+                      <span className="text-[11px] text-neutral-600">
+                        (por defecto)
+                      </span>
+                    </div>
+                    <div>
+                      <label className="mb-1.5 block text-xs text-neutral-500">
+                        Usuario / Perfil de la empresa
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="@empresa.rh"
+                        value={formData["red-social"]?.usuario ?? ""}
+                        onChange={(e) =>
+                          updateFormField(
+                            "red-social",
+                            "usuario",
+                            e.target.value
+                          )
+                        }
+                        className="w-full rounded-lg border border-white/10 bg-neutral-950 px-4 py-2.5 text-sm text-white placeholder-neutral-600 outline-none transition-colors focus:border-amber-500/40"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1.5 block text-xs text-neutral-500">
+                        Tipo de mensaje
+                      </label>
+                      <div className="flex gap-2">
+                        {(["texto", "nota-voz"] as const).map((tipo) => (
+                          <button
+                            key={tipo}
+                            onClick={() =>
+                              updateFormField(
+                                "red-social",
+                                "tipoMensaje",
+                                tipo
+                              )
+                            }
+                            className={`rounded-lg border px-4 py-2 text-sm transition-colors ${
+                              (formData["red-social"]?.tipoMensaje ??
+                                "texto") === tipo
+                                ? "border-amber-500/40 bg-amber-500/5 text-amber-300"
+                                : "border-white/10 text-neutral-400 hover:border-white/30 hover:text-neutral-200"
+                            }`}
+                          >
+                            {tipo === "texto" ? "💬 Mensaje de texto" : "🎤 Nota de voz"}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <label className="mb-1.5 block text-xs text-neutral-500">
+                        {formData["red-social"]?.tipoMensaje === "nota-voz"
+                          ? "Contenido de la nota de voz"
+                          : "Contenido del mensaje"}
+                      </label>
+                      <p className="mb-2 text-[11px] text-neutral-600">
+                        {formData["red-social"]?.tipoMensaje === "nota-voz"
+                          ? "¿Qué información vas a transmitir en la nota de voz? Máximo 2 minutos."
+                          : "¿Qué le dijiste o le vas a decir por mensaje directo?"}
+                      </p>
+                      <textarea
+                        rows={5}
+                        placeholder={
+                          formData["red-social"]?.tipoMensaje === "nota-voz"
+                            ? "Ej: Hola, soy desarrollador con experiencia en… me interesa la oferta…"
+                            : "Escribe el mensaje que enviaste o planeas enviar…"
+                        }
+                        value={formData["red-social"]?.contenido ?? ""}
+                        onChange={(e) =>
+                          updateFormField(
+                            "red-social",
+                            "contenido",
+                            e.target.value
+                          )
+                        }
+                        className="w-full rounded-lg border border-white/10 bg-neutral-950 px-4 py-2.5 text-sm text-white placeholder-neutral-600 outline-none transition-colors focus:border-amber-500/40 resize-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1.5 block text-xs text-neutral-500">
+                        Adjuntar CV personalizado
+                      </label>
+                      <div className="flex items-center gap-3 rounded-lg border border-dashed border-white/15 bg-neutral-950 px-4 py-3">
+                        <span className="text-sm text-neutral-500">📎</span>
+                        <span className="text-sm text-neutral-600">
+                          Seleccionar archivo (PDF, DOCX)
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ---- Guardar button ---- */}
+              <div className="flex justify-end border-t border-white/10 pt-4">
+                <button className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-6 py-2.5 text-sm font-medium text-amber-300 transition-colors hover:bg-amber-500/20">
+                  Guardar registro de contacto
+                </button>
+              </div>
             </div>
           )}
         </div>
