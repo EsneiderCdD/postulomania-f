@@ -193,10 +193,11 @@ function EmpresaPopup({ empresa }: { empresa: EmpresaMapa }) {
 export default function MapaOfertas({ data }: { data: MapaResponse }) {
   return (
     <section className="rounded-2xl border border-white/10 bg-neutral-900 shadow-xl overflow-hidden">
-      <div className="h-[500px] w-full">
+      <div className="h-[calc(100vh-4rem)] w-full">
         <MapContainer
           center={[6.21, -75.58]}
           zoom={12}
+          scrollWheelZoom={false}
           style={{ height: "100%", width: "100%" }}
         >
           <TileLayer
