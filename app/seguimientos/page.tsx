@@ -11,6 +11,7 @@ const links = [
 ];
 
 export default function SeguimientosPage() {
+
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-neutral-950">
       <div

@@ -23,3 +23,12 @@
   top: 8px !important;
   right: 8px !important;
 }
+
+@keyframes star-pulsar {
+  0%, 100% { background: #3b82f6; box-shadow: 0 0 8px 3px rgba(59,130,246,0.6), 0 0 10px 4px rgba(255,255,255,0.15); }
+  50% { background: #d94a4a; box-shadow: 0 0 8px 3px rgba(217,74,74,0.6), 0 0 10px 4px rgba(255,255,255,0.15); }
+}
+
+.star-pulsar {
+  animation: star-pulsar 2s ease-in-out infinite;
+}

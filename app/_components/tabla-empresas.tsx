@@ -7,6 +7,42 @@ import type { MapaResponse } from "./mapa-ofertas";
 
 type Editando = { empresaId: number; campo: string } | null;
 
+const ESTADO_BADGE: Record<string, { bg: string; label: string }> = {
+  rojo: { bg: "#d94a4a", label: "Sin postular" },
+  postulado: { bg: "#60a5fa", label: "Postulado" },
+  hdv_vista: { bg: "#3b82f6", label: "HdV Vista" },
+  finalista: { bg: "#4ade80", label: "Finalista" },
+  finalizado: { bg: "#a855f7", label: "Finalizado" },
+};
+
+const ESTADOS = [
+  { key: "", label: "Automático" },
+  { key: "rojo", label: "Sin postular" },
+  { key: "postulado", label: "Postulado" },
+  { key: "hdv_vista", label: "HdV Vista" },
+  { key: "finalista", label: "Finalista" },
+  { key: "finalizado", label: "Finalizado" },
+];
+
+function EstadoBadge({ estado }: { estado?: string }) {
+  const s = estado ?? "rojo";
+  const badge = ESTADO_BADGE[s] ?? ESTADO_BADGE["rojo"];
+  return (
+    <span className="inline-flex items-center gap-1.5 text-xs">
+      <span
+        className="inline-block rounded-full"
+        style={{
+          width: 8,
+          height: 8,
+          backgroundColor: badge.bg,
+          boxShadow: `0 0 4px 1px ${badge.bg}80`,
+        }}
+      />
+      <span style={{ color: badge.bg }}>{badge.label}</span>
+    </span>
+  );
+}
+
 export default function TablaEmpresas({
   data,
   focusEmpresaId,
@@ -66,6 +102,13 @@ export default function TablaEmpresas({
     [guardar, cerrarEdicion],
   );
 
+  const handleEstadoSelect = useCallback(async (empresaId: number, valor: string) => {
+    setEditando(null);
+    setEditValue("");
+    await updateEmpresa(empresaId, { estado_visual: valor || null });
+    router.refresh();
+  }, [router]);
+
   function renderCelda(empresaId: number, campo: string, valor: string | number | null, placeholder: string) {
     const editandoEsta = editando?.empresaId === empresaId && editando?.campo === campo;
     if (editandoEsta) {
@@ -110,6 +153,7 @@ export default function TablaEmpresas({
               <th className="px-5 py-3 font-medium">Web</th>
               <th className="px-5 py-3 font-medium">Lat</th>
               <th className="px-5 py-3 font-medium">Lng</th>
+              <th className="px-5 py-3 font-medium">Estado</th>
               <th className="px-5 py-3 font-medium text-right">Ofertas</th>
             </tr>
           </thead>
@@ -140,6 +184,32 @@ export default function TablaEmpresas({
                 </td>
                 <td className="px-5 py-3">
                   {renderCelda(empresa.id, "lng", empresa.lng, "—")}
+                </td>
+                <td className="px-5 py-3">
+                  {editando?.empresaId === empresa.id && editando?.campo === "estado_visual" ? (
+                    <select
+                      autoFocus
+                      value={editValue}
+                      onChange={(e) => handleEstadoSelect(editando.empresaId, e.target.value)}
+                      onBlur={cerrarEdicion}
+                      onKeyDown={(e) => { if (e.key === "Escape") cerrarEdicion(); }}
+                      className="rounded border border-amber-500/50 bg-neutral-800 px-2 py-0.5 text-xs text-white outline-none"
+                    >
+                      {ESTADOS.map(({ key, label }) => (
+                        <option key={key} value={key} className="bg-neutral-900 text-neutral-300">{label}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <span
+                      onClick={() => {
+                        setEditando({ empresaId: empresa.id, campo: "estado_visual" });
+                        setEditValue(empresa.estado_visual ?? empresa.estado_estrella ?? "rojo");
+                      }}
+                      className="cursor-pointer"
+                    >
+                      <EstadoBadge estado={empresa.estado_estrella} />
+                    </span>
+                  )}
                 </td>
                 <td className="px-5 py-3 text-right tabular-nums text-neutral-400">
                   {empresa.total_ofertas}

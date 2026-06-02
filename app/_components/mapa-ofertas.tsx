@@ -6,23 +6,13 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./mapa-ofertas.css";
 
-const markerIcon = L.divIcon({
-  className: "",
-  html: '<div style="width:10px;height:10px;border-radius:50%;background:#d94a4a;box-shadow:0 0 6px 2px rgba(217,74,74,0.6),0 0 10px 4px rgba(255,255,255,0.15);"></div>',
-  iconSize: [10, 10],
-  iconAnchor: [5, 5],
-  popupAnchor: [0, -6],
-});
-
 const yoIcon = L.divIcon({
   className: "",
-  html: '<div style="width:14px;height:14px;border-radius:50%;background:#3b82f6;box-shadow:0 0 8px 3px rgba(59,130,246,0.6),0 0 12px 5px rgba(255,255,255,0.15);border:2px solid #fff;"></div>',
+  html: '<div style="width:14px;height:14px;border-radius:50%;background:#fbbf24;box-shadow:0 0 10px 4px rgba(251,191,36,0.7),0 0 16px 6px rgba(255,255,255,0.15);border:2px solid #fff;"></div>',
   iconSize: [14, 14],
   iconAnchor: [7, 7],
   popupAnchor: [0, -8],
 });
-
-L.Marker.prototype.options.icon = markerIcon;
 
 const PUNTO_YO = {
   nombre: "Yo",
@@ -53,12 +43,67 @@ type EmpresaMapa = {
   total_ofertas: number;
   ofertas: OfertaEmpresa[];
   en_seguimiento: boolean;
+  estado_visual?: string | null;
+  estado_estrella?: string;
+  opacidad?: number;
+  compatibilidad_max?: number | null;
+  dias_ultima_accion?: number | null;
 };
 
 export type MapaResponse = {
   total: number;
   empresas: EmpresaMapa[];
 };
+
+function buildStarIcon(empresa: EmpresaMapa): L.DivIcon {
+  const estado = empresa.estado_estrella ?? "rojo";
+  const op = empresa.opacidad ?? 1;
+
+  let bg: string;
+  let shadow: string;
+  let animClass = "";
+  let size: number;
+
+  switch (estado) {
+    case "postulado":
+      bg = "#60a5fa";
+      shadow = "0 0 6px 2px rgba(96,165,250,0.5)";
+      size = 10;
+      break;
+    case "hdv_vista":
+      bg = "#3b82f6";
+      shadow = "0 0 8px 3px rgba(59,130,246,0.6)";
+      animClass = "star-pulsar";
+      size = 12;
+      break;
+    case "finalista":
+      bg = "#4ade80";
+      shadow = "0 0 8px 3px rgba(74,222,128,0.6)";
+      size = 14;
+      break;
+    case "finalizado":
+      bg = "#d94a4a";
+      shadow = "0 0 3px 1px rgba(217,74,74,0.3)";
+      size = 8;
+      break;
+    case "rojo":
+    default:
+      bg = "#d94a4a";
+      shadow = "0 0 6px 2px rgba(217,74,74,0.6)";
+      size = 10;
+  }
+
+  const glowOpacity = (0.15 * op).toFixed(2);
+  const half = size / 2;
+
+  return L.divIcon({
+    className: "",
+    html: `<div class="${animClass}" style="width:${size}px;height:${size}px;border-radius:50%;background:${bg};box-shadow:${shadow},0 0 10px 4px rgba(255,255,255,${glowOpacity});opacity:${op};"></div>`,
+    iconSize: [size, size],
+    iconAnchor: [half, half],
+    popupAnchor: [0, -half - 1],
+  });
+}
 
 function EmpresaPopup({ empresa }: { empresa: EmpresaMapa }) {
   const [abierto, setAbierto] = useState(false);
@@ -161,7 +206,11 @@ export default function MapaOfertas({ data }: { data: MapaResponse }) {
           {data.empresas
             .filter((e) => e.lat != null && e.lng != null)
             .map((e) => (
-              <Marker key={e.id} position={[e.lat, e.lng]}>
+              <Marker
+                key={e.id}
+                position={[e.lat, e.lng]}
+                icon={buildStarIcon(e)}
+              >
                 <EmpresaPopup empresa={e} />
               </Marker>
             ))}

@@ -74,6 +74,7 @@ export type EmpresaFields = {
   website?: string | null;
   municipio?: string | null;
   departamento?: string | null;
+  estado_visual?: string | null;
 };
 
 export async function updateEmpresa(id: number, fields: EmpresaFields) {

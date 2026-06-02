@@ -57,7 +57,7 @@ async function fetchApi<T>(path: string): Promise<T> {
 
 async function fetchMapaOfertas(): Promise<MapaResponse> {
   const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
-  const url = `${baseUrl}/api/v1/mapa/empresas`;
+  const url = `${baseUrl}/api/v1/mapa/empresas-seguimiento`;
   try {
     const response = await fetch(url, { cache: "no-store" });
     if (!response.ok) {
