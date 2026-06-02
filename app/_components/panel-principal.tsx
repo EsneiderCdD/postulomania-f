@@ -4,7 +4,6 @@ import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { MapaResponse } from "./mapa-ofertas";
-import MapaWrapper from "./mapa-wrapper";
 import TablaEmpresas from "./tabla-empresas";
 import OfertasTabla from "./ofertas-tabla";
 import ModalIngresarOferta from "./modal-ingresar-oferta";
@@ -121,7 +120,6 @@ export default function PanelPrincipal({
 
   return (
     <>
-      <MapaWrapper data={mapa} />
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 px-1 mt-4">
         <button
           onClick={handleOpenIngresar}

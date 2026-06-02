@@ -8,8 +8,8 @@ import type { MapaResponse } from "./mapa-ofertas";
 type Editando = { empresaId: number; campo: string } | null;
 
 const ESTADO_BADGE: Record<string, { bg: string; label: string }> = {
-  rojo: { bg: "#d94a4a", label: "Sin postular" },
-  postulado: { bg: "#60a5fa", label: "Postulado" },
+  rojo: { bg: "#94a3b8", label: "Frío" },
+  postulado: { bg: "#f8fafc", label: "Postulado" },
   hdv_vista: { bg: "#3b82f6", label: "HdV Vista" },
   finalista: { bg: "#4ade80", label: "Finalista" },
   finalizado: { bg: "#a855f7", label: "Finalizado" },
@@ -17,7 +17,7 @@ const ESTADO_BADGE: Record<string, { bg: string; label: string }> = {
 
 const ESTADOS = [
   { key: "", label: "Automático" },
-  { key: "rojo", label: "Sin postular" },
+  { key: "rojo", label: "Frío" },
   { key: "postulado", label: "Postulado" },
   { key: "hdv_vista", label: "HdV Vista" },
   { key: "finalista", label: "Finalista" },

@@ -66,9 +66,9 @@ function buildStarIcon(empresa: EmpresaMapa): L.DivIcon {
 
   switch (estado) {
     case "postulado":
-      bg = "#60a5fa";
-      shadow = "0 0 6px 2px rgba(96,165,250,0.5)";
-      size = 10;
+      bg = "#f8fafc";
+      shadow = "0 0 10px 5px rgba(248,250,252,0.7), 0 0 20px 8px rgba(248,250,252,0.3)";
+      size = 12;
       break;
     case "hdv_vista":
       bg = "#3b82f6";
@@ -82,15 +82,15 @@ function buildStarIcon(empresa: EmpresaMapa): L.DivIcon {
       size = 14;
       break;
     case "finalizado":
-      bg = "#d94a4a";
-      shadow = "0 0 3px 1px rgba(217,74,74,0.3)";
+      bg = "#a855f7";
+      shadow = "0 0 3px 1px rgba(168,85,247,0.3)";
       size = 8;
       break;
     case "rojo":
     default:
-      bg = "#d94a4a";
-      shadow = "0 0 6px 2px rgba(217,74,74,0.6)";
-      size = 10;
+      bg = "#94a3b8";
+      shadow = "0 0 4px 1px rgba(148,163,184,0.4)";
+      size = 8;
   }
 
   const glowOpacity = (0.15 * op).toFixed(2);
