@@ -7,6 +7,7 @@ const links = [
   { href: "/bodega", label: "Metricas" },
   { href: "/seguimientos", label: "Seguimientos" },
   { href: "/postulaciones", label: "Postulaciones" },
+  { href: "/laboratorio", label: "Laboratorio" },
 ];
 
 export default function Navbar() {

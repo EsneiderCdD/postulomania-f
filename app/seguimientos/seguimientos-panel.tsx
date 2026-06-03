@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import Link from "next/link";
 import {
   Bar,
   BarChart,
@@ -266,9 +267,16 @@ export default function SeguimientosPanel() {
                   >
                     Link
                   </a>
-                  <button className="rounded-lg border border-white/10 px-4 py-2 text-xs text-neutral-400 transition-colors hover:border-white/30 hover:text-neutral-200">
+                  <Link
+                    href={
+                      detail!.ofertas[0]?.id
+                        ? `/laboratorio?ofertaId=${detail!.ofertas[0].id}`
+                        : "/laboratorio"
+                    }
+                    className="rounded-lg border border-white/10 px-4 py-2 text-xs text-neutral-400 transition-colors hover:border-white/30 hover:text-neutral-200"
+                  >
                     Laboratorio de ofertas
-                  </button>
+                  </Link>
                 </div>
               </div>
 
