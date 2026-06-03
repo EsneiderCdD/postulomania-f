@@ -44,12 +44,12 @@ const ITEMS = [
     label: "Finalista",
   },
   {
-    color: "#a855f7",
+    color: "#ef4444",
     size: 8,
-    shadow: "0 0 3px 1px rgba(168,85,247,0.3)",
+    shadow: "0 0 6px 2px rgba(239,68,68,0.5)",
     border: "",
     anim: "",
-    label: "Finalizado · 60 d",
+    label: "Finalizado · 30 d",
   },
 ];
 

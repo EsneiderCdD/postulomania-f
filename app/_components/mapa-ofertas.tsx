@@ -82,8 +82,8 @@ function buildStarIcon(empresa: EmpresaMapa): L.DivIcon {
       size = 14;
       break;
     case "finalizado":
-      bg = "#a855f7";
-      shadow = "0 0 3px 1px rgba(168,85,247,0.3)";
+      bg = "#ef4444";
+      shadow = "0 0 6px 2px rgba(239,68,68,0.5)";
       size = 8;
       break;
     case "frio":

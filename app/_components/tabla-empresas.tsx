@@ -12,7 +12,7 @@ const ESTADO_BADGE: Record<string, { bg: string; label: string }> = {
   postulado: { bg: "#f8fafc", label: "Postulado" },
   hdv_vista: { bg: "#3b82f6", label: "HdV Vista" },
   finalista: { bg: "#4ade80", label: "Finalista" },
-  finalizado: { bg: "#a855f7", label: "Finalizado" },
+  finalizado: { bg: "#ef4444", label: "Finalizado" },
 };
 
 const ESTADOS = [
