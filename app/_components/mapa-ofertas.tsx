@@ -56,7 +56,7 @@ export type MapaResponse = {
 };
 
 function buildStarIcon(empresa: EmpresaMapa): L.DivIcon {
-  const estado = empresa.estado_estrella ?? "rojo";
+  const estado = empresa.estado_estrella ?? "frio";
   const op = empresa.opacidad ?? 1;
 
   let bg: string;
@@ -86,7 +86,7 @@ function buildStarIcon(empresa: EmpresaMapa): L.DivIcon {
       shadow = "0 0 3px 1px rgba(168,85,247,0.3)";
       size = 8;
       break;
-    case "rojo":
+    case "frio":
     default:
       bg = "#94a3b8";
       shadow = "0 0 4px 1px rgba(148,163,184,0.4)";

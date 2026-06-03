@@ -8,7 +8,7 @@ import type { MapaResponse } from "./mapa-ofertas";
 type Editando = { empresaId: number; campo: string } | null;
 
 const ESTADO_BADGE: Record<string, { bg: string; label: string }> = {
-  rojo: { bg: "#94a3b8", label: "Frío" },
+  frio: { bg: "#94a3b8", label: "Frío" },
   postulado: { bg: "#f8fafc", label: "Postulado" },
   hdv_vista: { bg: "#3b82f6", label: "HdV Vista" },
   finalista: { bg: "#4ade80", label: "Finalista" },
@@ -17,7 +17,7 @@ const ESTADO_BADGE: Record<string, { bg: string; label: string }> = {
 
 const ESTADOS = [
   { key: "", label: "Automático" },
-  { key: "rojo", label: "Frío" },
+  { key: "frio", label: "Frío" },
   { key: "postulado", label: "Postulado" },
   { key: "hdv_vista", label: "HdV Vista" },
   { key: "finalista", label: "Finalista" },
@@ -25,8 +25,8 @@ const ESTADOS = [
 ];
 
 function EstadoBadge({ estado }: { estado?: string }) {
-  const s = estado ?? "rojo";
-  const badge = ESTADO_BADGE[s] ?? ESTADO_BADGE["rojo"];
+  const s = estado ?? "frio";
+  const badge = ESTADO_BADGE[s] ?? ESTADO_BADGE["frio"];
   return (
     <span className="inline-flex items-center gap-1.5 text-xs">
       <span
@@ -203,7 +203,7 @@ export default function TablaEmpresas({
                     <span
                       onClick={() => {
                         setEditando({ empresaId: empresa.id, campo: "estado_visual" });
-                        setEditValue(empresa.estado_visual ?? empresa.estado_estrella ?? "rojo");
+                        setEditValue(empresa.estado_visual ?? empresa.estado_estrella ?? "frio");
                       }}
                       className="cursor-pointer"
                     >
