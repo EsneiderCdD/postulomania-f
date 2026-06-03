@@ -13,6 +13,7 @@ const ESTADO_BADGE: Record<string, { bg: string; label: string }> = {
   hdv_vista: { bg: "#3b82f6", label: "HdV Vista" },
   finalista: { bg: "#4ade80", label: "Finalista" },
   finalizado: { bg: "#ef4444", label: "Finalizado" },
+  suspendido: { bg: "#d97706", label: "Suspendido" },
 };
 
 const ESTADOS = [
@@ -22,6 +23,7 @@ const ESTADOS = [
   { key: "hdv_vista", label: "HdV Vista" },
   { key: "finalista", label: "Finalista" },
   { key: "finalizado", label: "Finalizado" },
+  { key: "suspendido", label: "Suspendido" },
 ];
 
 function EstadoBadge({ estado }: { estado?: string }) {

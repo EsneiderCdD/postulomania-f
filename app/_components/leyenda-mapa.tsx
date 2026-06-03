@@ -51,6 +51,14 @@ const ITEMS = [
     anim: "",
     label: "Finalizado · 30 d",
   },
+  {
+    color: "#d97706",
+    size: 8,
+    shadow: "0 0 4px 1px rgba(217,119,6,0.4)",
+    border: "",
+    anim: "",
+    label: "Suspendido",
+  },
 ];
 
 export default function LeyendaMapa() {
