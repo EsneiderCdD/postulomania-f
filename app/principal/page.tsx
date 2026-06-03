@@ -1,5 +1,6 @@
 import type { MapaResponse } from "../_components/mapa-ofertas";
 import MapaWrapper from "../_components/mapa-wrapper";
+import LeyendaMapa from "../_components/leyenda-mapa";
 import PanelPrincipal from "../_components/panel-principal";
 
 type Oferta = {
@@ -91,6 +92,7 @@ export default async function Principal() {
 
       <div className="relative z-10 mx-auto w-[98%] max-w-[1333px] min-h-screen rounded-3xl border border-white/5 bg-neutral-900 overflow-hidden">
         <MapaWrapper data={mapa} />
+        <LeyendaMapa />
         <div className="flex flex-col items-center px-6 py-8">
           <div className="w-full space-y-6">
             <PanelPrincipal
