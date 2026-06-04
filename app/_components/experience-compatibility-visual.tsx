@@ -61,7 +61,7 @@ export default function ExperienceCompatibilityVisual({
               <CartesianGrid stroke="#262626" strokeDasharray="3 3" />
               <XAxis dataKey="nivel" stroke="#a3a3a3" tick={{ fontSize: 12 }} />
               <YAxis stroke="#a3a3a3" domain={[0, 1]} />
-              <Tooltip formatter={(v: number) => [v.toFixed(4), "score"]} />
+              <Tooltip formatter={(v) => [Number(v).toFixed(4), "score"]} />
               <Bar dataKey="score" radius={[6, 6, 0, 0]}>
                 {rows.map((_, i) => (
                   <Cell key={i} fill={BRAND_CHART_COLORS[i % BRAND_CHART_COLORS.length]} />

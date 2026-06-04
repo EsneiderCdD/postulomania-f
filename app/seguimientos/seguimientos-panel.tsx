@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
 import {
   Bar,
@@ -17,6 +17,7 @@ import {
   getSeguimientosEmpresas,
   getSeguimientoDetail,
   setEmpresaTipo,
+  getOferta,
   type SeguimientoEmpresa,
   type SeguimientoDetail,
 } from "../actions";
@@ -60,6 +61,8 @@ export default function SeguimientosPanel() {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [detail, setDetail] = useState<SeguimientoDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
+  const [selectedOfertaId, setSelectedOfertaId] = useState<number | null>(null);
+  const [ofertaTechs, setOfertaTechs] = useState<string[]>([]);
   const [canalesActivos, setCanalesActivos] = useState<Record<string, boolean>>(
     {}
   );
@@ -77,11 +80,27 @@ export default function SeguimientosPanel() {
   useEffect(() => {
     if (selectedId == null) return;
     setDetailLoading(true);
+    setSelectedOfertaId(null);
     getSeguimientoDetail(selectedId).then((d) => {
       setDetail(d);
       setDetailLoading(false);
+      if (d && d.ofertas.length > 0) {
+        setSelectedOfertaId(d.ofertas[0].id);
+      }
     });
   }, [selectedId]);
+
+  useEffect(() => {
+    if (selectedOfertaId == null) {
+      setOfertaTechs([]);
+      return;
+    }
+    getOferta(selectedOfertaId).then((res) => {
+      if (res && "tecnologias" in res) {
+        setOfertaTechs(res.tecnologias ?? []);
+      }
+    });
+  }, [selectedOfertaId]);
 
   const handleSetTipo = useCallback(
     async (tipo: string) => {
@@ -132,6 +151,15 @@ export default function SeguimientosPanel() {
   };
 
   const empresaActual = detail?.empresa ?? null;
+  const selectedOferta =
+    detail?.ofertas.find((o) => o.id === selectedOfertaId) ?? null;
+
+  const chartData = useMemo(() => {
+    if (selectedOfertaId != null && ofertaTechs.length > 0) {
+      return ofertaTechs.map((t) => ({ tech: t, ofertas: 1 }));
+    }
+    return detail?.tecnologias ?? [];
+  }, [selectedOfertaId, ofertaTechs, detail?.tecnologias]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -220,9 +248,14 @@ export default function SeguimientosPanel() {
                   </h4>
                   <div className="flex flex-col gap-1">
                     {detail!.ofertas.map((oferta) => (
-                      <div
+                      <button
                         key={oferta.id}
-                        className="flex items-center gap-4 rounded-lg px-3 py-2 transition-colors hover:bg-white/[0.03]"
+                        onClick={() => setSelectedOfertaId(oferta.id)}
+                        className={`flex items-center gap-4 rounded-lg px-3 py-2 text-left transition-colors ${
+                          selectedOfertaId === oferta.id
+                            ? "bg-amber-500/5 ring-1 ring-amber-500/20"
+                            : "hover:bg-white/[0.03]"
+                        }`}
                       >
                         <span className="w-10 text-xs text-neutral-600">
                           #{oferta.id}
@@ -244,7 +277,7 @@ export default function SeguimientosPanel() {
                             —
                           </span>
                         )}
-                      </div>
+                      </button>
                     ))}
                     {detail!.ofertas.length === 0 && (
                       <p className="py-4 text-center text-sm text-neutral-600">
@@ -257,8 +290,8 @@ export default function SeguimientosPanel() {
                 <div className="flex w-52 shrink-0 flex-col gap-2 px-4 py-4">
                   <a
                     href={
-                      detail!.ofertas[0]?.enlace
-                        ? detail!.ofertas[0].enlace
+                      selectedOferta?.enlace
+                        ? selectedOferta.enlace
                         : "#"
                     }
                     target="_blank"
@@ -269,8 +302,8 @@ export default function SeguimientosPanel() {
                   </a>
                   <Link
                     href={
-                      detail!.ofertas[0]?.id
-                        ? `/laboratorio?ofertaId=${detail!.ofertas[0].id}`
+                      selectedOferta?.id
+                        ? `/laboratorio?ofertaId=${selectedOferta.id}`
                         : "/laboratorio"
                     }
                     className="rounded-lg border border-white/10 px-4 py-2 text-xs text-neutral-400 transition-colors hover:border-white/30 hover:text-neutral-200"
@@ -286,11 +319,11 @@ export default function SeguimientosPanel() {
                   <h4 className="mb-3 text-xs font-medium uppercase tracking-wider text-neutral-500">
                     Tecnologías solicitadas
                   </h4>
-                  <div className="h-[200px]">
-                    {detail!.tecnologias.length > 0 ? (
+                  <div className="h-[280px]">
+                    {chartData.length > 0 ? (
                       <ResponsiveContainer width="100%" height="100%">
                         <BarChart
-                          data={detail!.tecnologias}
+                          data={chartData}
                           layout="vertical"
                           margin={{ top: 4, right: 20, left: 70, bottom: 4 }}
                         >
@@ -309,7 +342,7 @@ export default function SeguimientosPanel() {
                           />
                           <Tooltip />
                           <Bar dataKey="ofertas" radius={[0, 6, 6, 0]}>
-                            {detail!.tecnologias.map((_, index) => (
+                            {chartData.map((_, index) => (
                               <Cell
                                 key={index}
                                 fill={
@@ -329,33 +362,13 @@ export default function SeguimientosPanel() {
                     )}
                   </div>
                   <p className="mt-1 text-right text-[10px] text-neutral-600">
-                    Suma de tecnologías × ofertas de esta empresa
+                    {selectedOfertaId != null
+                      ? "Tecnologías de la oferta seleccionada"
+                      : "Suma de tecnologías × ofertas de esta empresa"}
                   </p>
                 </div>
 
-                {/* Stat cards - hardcoded as requested */}
-                <div className="grid grid-cols-3 gap-3 border-t border-white/10 px-6 py-4">
-                  <div className="rounded-xl border border-white/10 bg-neutral-950 p-3">
-                    <p className="text-xs text-neutral-500">
-                      Compatibilidad promedio
-                    </p>
-                    <p className="mt-1 text-xl font-semibold text-white">38%</p>
-                  </div>
-                  <div className="rounded-xl border border-white/10 bg-neutral-950 p-3">
-                    <p className="text-xs text-neutral-500">
-                      Rango de experiencia
-                    </p>
-                    <p className="mt-1 text-xl font-semibold text-white">
-                      2 – 5 años
-                    </p>
-                  </div>
-                  <div className="rounded-xl border border-white/10 bg-neutral-950 p-3">
-                    <p className="text-xs text-neutral-500">
-                      Inglés requerido
-                    </p>
-                    <p className="mt-1 text-xl font-semibold text-white">33%</p>
-                  </div>
-                </div>
+
               </div>
             </div>
           ) : (

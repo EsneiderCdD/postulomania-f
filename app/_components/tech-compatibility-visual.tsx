@@ -49,7 +49,7 @@ export default function TechCompatibilityVisual({
                   <CartesianGrid stroke="#262626" strokeDasharray="3 3" />
                   <XAxis type="number" stroke="#a3a3a3" domain={[0, 1]} />
                   <YAxis dataKey="tech" type="category" width={100} stroke="#d4d4d4" tick={{ fontSize: 12 }} />
-                  <Tooltip formatter={(v: number) => [v.toFixed(4), "score"]} />
+                  <Tooltip formatter={(v) => [Number(v).toFixed(4), "score"]} />
                   <Bar dataKey="score" radius={[0, 6, 6, 0]}>
                     {topRows.map((_, i) => (
                       <Cell key={i} fill={BRAND_CHART_COLORS[i % BRAND_CHART_COLORS.length]} />
@@ -74,7 +74,7 @@ export default function TechCompatibilityVisual({
                   <CartesianGrid stroke="#262626" strokeDasharray="3 3" />
                   <XAxis type="number" stroke="#a3a3a3" domain={[0, 1]} />
                   <YAxis dataKey="tech" type="category" width={100} stroke="#d4d4d4" tick={{ fontSize: 12 }} />
-                  <Tooltip formatter={(v: number) => [v.toFixed(4), "score"]} />
+                  <Tooltip formatter={(v) => [Number(v).toFixed(4), "score"]} />
                   <Bar dataKey="score" radius={[0, 6, 6, 0]}>
                     {bottomRows.map((_, i) => (
                       <Cell key={i} fill={BRAND_CHART_COLORS[(i + 4) % BRAND_CHART_COLORS.length]} />

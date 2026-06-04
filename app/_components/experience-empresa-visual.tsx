@@ -44,7 +44,7 @@ export default function ExperienceEmpresaVisual({ data }: { data: ExperienceEmpr
                 <CartesianGrid stroke="#262626" strokeDasharray="3 3" />
                 <XAxis type="number" stroke="#a3a3a3" label={{ value: "anos", position: "bottom", fill: "#a3a3a3" }} />
                 <YAxis dataKey="empresa" type="category" width={160} stroke="#d4d4d4" tick={{ fontSize: 11 }} />
-                <Tooltip formatter={(v: number) => [`${v} anos`, ""]} />
+                <Tooltip formatter={(v) => [`${Number(v)} anos`, ""]} />
                 <Bar dataKey="exp" fill={BRAND_CHART_COLORS[1]} radius={[0, 6, 6, 0]} />
               </BarChart>
             </ResponsiveContainer>

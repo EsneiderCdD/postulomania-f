@@ -120,7 +120,7 @@ export default function TimingVisual({ data }: { data: TimingStats }) {
               />
               <YAxis stroke="#a3a3a3" allowDecimals={false} />
               <Tooltip
-                formatter={(_value: number, _name: string, item) => [
+                formatter={(_value, _name, item) => [
                   `${item.payload.count} ofertas`,
                   item.payload.dayFull,
                 ]}
@@ -178,7 +178,7 @@ export default function TimingVisual({ data }: { data: TimingStats }) {
               />
               <YAxis stroke="#a3a3a3" allowDecimals={false} />
               <Tooltip
-                formatter={(value: number) => [`${value} ofertas`, ""]}
+                formatter={(value) => [`${value} ofertas`, ""]}
               />
               <Area
                 type="monotone"

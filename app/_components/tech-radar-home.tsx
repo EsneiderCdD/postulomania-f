@@ -54,8 +54,8 @@ export default function TechRadarHome({ data }: { data: MapaResponse }) {
                   tick={{ fontSize: 11 }}
                 />
                 <Tooltip
-                  formatter={(value: number) => [
-                    `${value} oferta${value !== 1 ? "s" : ""}`,
+                  formatter={(value) => [
+                    `${value} oferta${Number(value) !== 1 ? "s" : ""}`,
                     "Frecuencia",
                   ]}
                   contentStyle={{

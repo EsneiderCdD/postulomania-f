@@ -153,7 +153,7 @@ export default function EnglishVisual({ data }: { data: EnglishStats }) {
                 stroke="#a3a3a3"
                 tickFormatter={(v: number) => `${v}%`}
               />
-              <Tooltip formatter={(value: number) => [`${value}%`, "% inglés"]} />
+              <Tooltip formatter={(value) => [`${Number(value)}%`, "% inglés"]} />
               <Bar
                 dataKey="valor"
                 fill={BRAND_CHART_COLORS[3]}

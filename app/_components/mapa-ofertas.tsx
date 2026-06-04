@@ -214,7 +214,7 @@ export default function MapaOfertas({ data }: { data: MapaResponse }) {
             .map((e) => (
               <Marker
                 key={e.id}
-                position={[e.lat, e.lng]}
+                position={[e.lat as number, e.lng as number]}
                 icon={buildStarIcon(e)}
               >
                 <EmpresaPopup empresa={e} />

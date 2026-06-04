@@ -72,7 +72,7 @@ export default function TablaEmpresas({
 
   const abrirEdicion = useCallback((empresaId: number, campo: string, valorActual: string | number | null) => {
     setEditando({ empresaId, campo });
-    setEditValue(valorActual ?? "");
+    setEditValue(String(valorActual ?? ""));
   }, []);
 
   const cerrarEdicion = useCallback(() => {

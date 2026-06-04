@@ -86,8 +86,8 @@ export default function OrigenDonut({
                   const iR = Number(innerRadius);
                   const oR = Number(outerRadius);
                   const radius = iR + (oR - iR) * 0.5;
-                  const x = Number(cx) + radius * Math.cos((-midAngle * Math.PI) / 180);
-                  const y = Number(cy) + radius * Math.sin((-midAngle * Math.PI) / 180);
+                  const x = Number(cx) + radius * Math.cos((-(midAngle ?? 0) * Math.PI) / 180);
+                  const y = Number(cy) + radius * Math.sin((-(midAngle ?? 0) * Math.PI) / 180);
                   return (
                     <text
                       x={x}
@@ -113,7 +113,7 @@ export default function OrigenDonut({
               </Pie>
 
               <Tooltip
-                formatter={(value: number, _name, item) => [
+                formatter={(value, _name, item) => [
                   `${Number(value).toFixed(1)}% (${item.payload.count} ofertas)`,
                   item.payload.name,
                 ]}

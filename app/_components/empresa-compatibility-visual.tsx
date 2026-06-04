@@ -53,7 +53,7 @@ export default function EmpresaCompatibilityVisual({
                 <CartesianGrid stroke="#262626" strokeDasharray="3 3" />
                 <XAxis type="number" stroke="#a3a3a3" domain={[0, 1]} />
                 <YAxis dataKey="empresa" type="category" width={160} stroke="#d4d4d4" tick={{ fontSize: 11 }} />
-                <Tooltip formatter={(v: number) => [v.toFixed(4), "score"]} />
+                <Tooltip formatter={(v) => [Number(v).toFixed(4), "score"]} />
                 <Bar dataKey="score" radius={[0, 6, 6, 0]}>
                   {rows.map((_, i) => (
                     <Cell key={i} fill={BRAND_CHART_COLORS[i % BRAND_CHART_COLORS.length]} />
