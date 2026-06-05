@@ -292,6 +292,8 @@ export type SeguimientoEmpresa = {
   nombre: string;
   tipo: string | null;
   foto_url: string | null;
+  estado_visual: string | null;
+  estado_estrella: string;
 };
 
 export async function getSeguimientosEmpresas(): Promise<SeguimientoEmpresa[]> {
@@ -321,6 +323,8 @@ export type SeguimientoDetail = {
     nombre: string;
     tipo: string | null;
     foto_url: string | null;
+    estado_visual: string | null;
+    estado_estrella: string;
   };
   ofertas: SeguimientoOferta[];
   tecnologias: SeguimientoTech[];

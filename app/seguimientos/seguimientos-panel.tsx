@@ -33,6 +33,15 @@ const AVATAR_COLORS = [
   "#6D4C41",
 ];
 
+const ESTADO_BADGE: Record<string, { bg: string; label: string }> = {
+  frio: { bg: "#94a3b8", label: "Frío" },
+  postulado: { bg: "#f8fafc", label: "Postulado" },
+  hdv_vista: { bg: "#3b82f6", label: "HdV Vista" },
+  finalista: { bg: "#4ade80", label: "Finalista" },
+  finalizado: { bg: "#ef4444", label: "Finalizado" },
+  suspendido: { bg: "#d97706", label: "Suspendido" },
+};
+
 const canalesContacto = [
   { key: "telefono", label: "Teléfono", icon: "📞" },
   { key: "correo", label: "Correo", icon: "✉" },
@@ -195,7 +204,7 @@ export default function SeguimientosPanel() {
           ) : empresaActual ? (
             <div className="flex flex-col">
               {/* Header */}
-              <div className="flex items-center gap-5 border-b border-white/10 px-6 py-6">
+              <div className="relative flex items-center gap-5 border-b border-white/10 px-6 py-6">
                 {empresaActual.foto_url ? (
                   <img
                     src={empresaActual.foto_url}
@@ -237,6 +246,21 @@ export default function SeguimientosPanel() {
                       </button>
                     </div>
                   )}
+                </div>
+                <div className="absolute right-5 bottom-5 flex items-center gap-1.5 text-xs">
+                  <span
+                    className="inline-block rounded-full"
+                    style={{
+                      width: 8,
+                      height: 8,
+                      backgroundColor:
+                        ESTADO_BADGE[empresaActual.estado_estrella]?.bg ?? ESTADO_BADGE["frio"].bg,
+                      boxShadow: `0 0 4px 1px ${ESTADO_BADGE[empresaActual.estado_estrella]?.bg ?? ESTADO_BADGE["frio"].bg}80`,
+                    }}
+                  />
+                  <span style={{ color: ESTADO_BADGE[empresaActual.estado_estrella]?.bg ?? ESTADO_BADGE["frio"].bg }}>
+                    {ESTADO_BADGE[empresaActual.estado_estrella]?.label ?? ESTADO_BADGE["frio"].label}
+                  </span>
                 </div>
               </div>
 
