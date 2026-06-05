@@ -535,12 +535,15 @@ function NotesSection({ ofertaId, ofertaTitulo }: { ofertaId: number; ofertaTitu
                       <button
                         type="button"
                         onClick={() => toggleExpand(nota.id)}
-                        className="flex w-full items-center justify-between px-4 py-3 text-left"
+                        className="flex w-full items-center gap-3 px-4 py-3 text-left"
                       >
-                        <span className="text-[11px] text-neutral-500">
+                        <span className="shrink-0 text-[11px] text-neutral-500">
                           {formatearFecha(nota.fecha_creacion)}
                         </span>
-                        <div className="flex items-center gap-2">
+                        <span className="min-w-0 flex-1 truncate text-[11px] text-amber-300/80">
+                          {nota.contenido}
+                        </span>
+                        <div className="flex shrink-0 items-center gap-2">
                           <span
                             onClick={(e) => { e.stopPropagation(); abrirEditorEditar(nota); }}
                             className="rounded p-1 text-xs text-neutral-600 opacity-0 transition-all group-hover:opacity-100 hover:text-amber-300 hover:bg-white/5"
