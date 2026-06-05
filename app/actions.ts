@@ -354,3 +354,59 @@ export async function setEmpresaTipo(empresaId: number, tipo: string) {
   }
   return res.json();
 }
+
+export type NotaItem = {
+  id: number;
+  oferta_id: number | null;
+  empresa_id: number | null;
+  contenido: string;
+  fecha_creacion: string;
+};
+
+export async function getNotas(ofertaId: number): Promise<NotaItem[]> {
+  const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
+  const res = await fetch(`${baseUrl}/api/v1/notas?oferta_id=${ofertaId}`);
+  if (!res.ok) return [];
+  const data = await res.json();
+  return data.notas ?? [];
+}
+
+export async function createNota(ofertaId: number, contenido: string): Promise<NotaItem | null> {
+  const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
+  const res = await fetch(`${baseUrl}/api/v1/notas`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ oferta_id: ofertaId, contenido }),
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    console.error(`[createNota] HTTP ${res.status}: ${body}`);
+    return null;
+  }
+  return res.json();
+}
+
+export async function updateNota(id: number, contenido: string): Promise<NotaItem | null> {
+  const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
+  const res = await fetch(`${baseUrl}/api/v1/notas/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ contenido }),
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    console.error(`[updateNota] HTTP ${res.status}: ${body}`);
+    return null;
+  }
+  return res.json();
+}
+
+export async function deleteNota(id: number): Promise<boolean> {
+  const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
+  const res = await fetch(`${baseUrl}/api/v1/notas/${id}`, { method: "DELETE" });
+  if (!res.ok) {
+    console.error(`[deleteNota] HTTP ${res.status}`);
+    return false;
+  }
+  return true;
+}
