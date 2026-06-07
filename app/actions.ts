@@ -290,6 +290,7 @@ export async function toggleSeguimiento(empresaId: number, enSeguimiento: boolea
 export type SeguimientoEmpresa = {
   id: number;
   nombre: string;
+  website: string | null;
   tipo: string | null;
   foto_url: string | null;
   estado_visual: string | null;
@@ -321,6 +322,7 @@ export type SeguimientoDetail = {
   empresa: {
     id: number;
     nombre: string;
+    website: string | null;
     tipo: string | null;
     foto_url: string | null;
     estado_visual: string | null;

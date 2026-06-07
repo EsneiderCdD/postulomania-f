@@ -39,40 +39,9 @@ La palabra "nivel" es literal. Yo la reemplazo después (ej: "faltante", "por ap
 ## Oferta a revisar:
 
 [PEGÁ AQUÍ LA OFERTA]
-Desarrollador Mobile Ionic
-Vector Colombia 
-Vector-2 Computer Science
-En Pragma estamos contratando Desarrollador Mobile Ionic para uno de nuestros equipos de alto desempeño, estamos buscando a alguien que crea profundamente en el trabajo colaborativo para la construcción de grandes aplicaciones móviles que aporten soluciones creativas, útiles y especialmente que atiendan las necesidades de los usuarios para facilitarles lo que realmente necesitan.
+Ubicación: Medellín Tipo de contrato: Indefinido Disponibilidad: Inmediata Descripción del Cargo: En ASIGNAR S.A.S, estamos en la búsqueda de un Desarrollador de Software apasionado por la tecnología, proactivo y con capacidad de trabajar en equipo. El candidato ideal debe contar con sólidos conocimientos en desarrollo web y backend, utilizando tecnologías como JavaScript, PHP, Python y Vue, , para participar activamente en el diseño, desarrollo y mantenimiento de nuestras soluciones digitales. Responsabilidades: Diseñar y desarrollar aplicaciones web escalables y seguras. Participar en todas las fases del ciclo de desarrollo del software. Mantener y optimizar código existente. Colaborar con otros desarrolladores, diseñadores y equipos funcionales. Documentar procesos y soluciones desarrolladas. Investigar nuevas tecnologías que puedan mejorar la eficiencia del equipo. Requisitos: Formación en Ingeniería de Sistemas, Desarrollo de Software o áreas afines. Experiencia mínima de 3 años en desarrollo de software. Conocimientos comprobables en: JavaScript (preferiblemente con frameworks como React, Vue). PHP (Laravel, Symfony o similar). Python (Django, Flask o scripts automatizados). Manejo de bases de datos (MySQL, PostgreSQL, MongoDB). Buenas prácticas de programación y control de versiones (Git). Capacidad de trabajo en equipo y comunicación efectiva. Deseable: Experiencia con APIs RESTful. Conocimiento en metodologías ágiles (Scrum/Kanban). Ofrecemos: Salario $4.000.000 en adelante de acuerdo a experiencia laboral Modalidad de trabajo 100 % Presencial en Medellín Ambiente laboral colaborativo y dinámico. Oportunidades de crecimiento profesional y formación continua. Participación en proyectos innovadores y con impacto.
 
-¿A qué retos te enfrentarás?
-Tendrás la responsabilidad de implementar aplicaciones móviles asegurando el cumplimiento de las especificaciones de diseño y solucionando las necesidades del usuario final.
-Trabajarás bajo los estándares y metodologías de desarrollo que se han definido en tu equipo de trabajo.
-Participarás activamente en la identificación y selección de alternativas que resuelvan, de mejor modo, lo que el usuario final anhela.
-Apoyarás al equipo para encontrar soluciones eficientes a esos impedimentos que pueden afectar los resultados del equipo.
-Ayudarás a dar soporte y hacer ajustes en las aplicaciones ya entregadas.
-Serás parte de un equipo interdisciplinario con el que trabajarás colaborativamente para lograr la entrega de la solución con calidad y de forma oportuna, gestionando si es necesario con las diferentes áreas que intervengan en todo el proceso.
-¿Qué buscamos en ti?
- Al menos 3 años de experiencia como desarrollador mobile ionic.
-Conocimiento profundo de Angular y TypeScript como base de desarrollo.
-Experiencia aplicando prácticas fundamentales de ingeniería de software, incluyendo principios SOLID, patrones de diseño GoF y técnicas de código limpio como DRY, KISS y YAGNI.
-Comprender los conceptos asociados a arquitecturas limpias y modulares que favorezcan el bajo acoplamiento.
-Dominio de la CLI de Ionic, herramientas de build y gestión de plugins de Capacitor y Cordova.
-Tener conocimientos sobre maquetación y diagramación usando CSS, Flexbox, Grid, y componentes de Ionic UI.
-Contar con capacidad para el desarrollo o modificación de plugins en Cordova / Capacitor.
-Tener conocimiento de integraciones con funcionalidades nativas del sistema operativo Android o iOS y con SDK’s de terceros.
-Tener experiencia en desarrollo orientado a pruebas con Jest, Jasmine y Karma.
-Tener experiencia en el consumo de APIs REST (JSON) y manejo de peticiones asincrónicas con HttpClient, Axios o RxJS.
-Manejo de mecanismos seguros de almacenamiento de información: ionic storage, secure storage, Keychain, Keystore.
-Estar siempre dispuesto a aprender, innovar y generar mejores soluciones día a día.
-¿Qué nos encantaría encontrar?
-No es necesario, pero sería grandioso saber que cuentas con
+Requerimientos
 
-Conocimiento en gestión de tiendas de aplicaciones y publicaciones abiertas y/o cerradas.
-Conocimientos sobre arquitectura modulares con Nx.
-Conocimientos sobre servicios de AWS tales como Lambdas, API Gateway, DynamoDB, SNS, Cloudwatch, CloudFront.
-Conocimientos sobre IBM MobileFirst Platform y sus adaptadores para aplicaciones móviles.
-Conocimiento en cuanto desarrollo seguro basado en OWASP.
-Conocimiento sobre prácticas de observabilidad.
-Recuerda...
-
-Aprender, innovar y evolucionar formarán parte de tu día a día, acá serás el piloto de tu destino. ¿Te suena?, ¡aplica y prepárate para marcar el ritmo de tu carrera!
+Educación mínima: Universidad / Carrera tecnológica
+3 años de experiencia

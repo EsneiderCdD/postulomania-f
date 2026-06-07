@@ -286,6 +286,14 @@ export default function SeguimientosPanel() {
                   >
                     Laboratorio de ofertas
                   </Link>
+                  <a
+                    href={empresaActual?.website || "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-lg border border-white/10 px-4 py-2 text-center text-xs text-neutral-400 transition-colors hover:border-white/30 hover:text-neutral-200"
+                  >
+                    Link Web
+                  </a>
                 </div>
               </div>
 
