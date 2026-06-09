@@ -1,4 +1,7 @@
-import { getPerfil } from "../actions";
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
+import { getPerfil, updatePerfil, type PerfilData } from "../actions";
 
 const CATEGORY_ORDER = [
   "backend",
@@ -23,81 +26,66 @@ const CATEGORY_LABELS: Record<string, string> = {
   otras: "Otras",
 };
 
-const TECH_CATEGORY_MAP: Record<string, string> = {
-  // Backend
-  "Python": "backend",
-  "Java": "backend",
-  "C#": "backend",
-  ".NET": "backend",
-  "PHP": "backend",
-  "Ruby": "backend",
-  "Go": "backend",
-  "Node.js": "backend",
-  "Laravel": "backend",
-  "Symfony": "backend",
-  "Django": "backend",
-  "Flask": "backend",
-  "Express.js": "backend",
-  "NestJS": "backend",
-  "Spring Boot": "backend",
-  "REST API": "backend",
-  "Web Services": "backend",
-  "SOAP": "backend",
-  "JWT": "backend",
-  "SAP": "backend",
-  "GraphQL": "backend",
-  // Frontend
-  "JavaScript": "frontend",
-  "TypeScript": "frontend",
-  "HTML": "frontend",
-  "CSS": "frontend",
-  "React": "frontend",
-  "Angular": "frontend",
-  "Vue.js": "frontend",
-  "Next.js": "frontend",
-  "jQuery": "frontend",
-  // Bases de Datos
-  "SQL": "bases_de_datos",
-  "MySQL": "bases_de_datos",
-  "PostgreSQL": "bases_de_datos",
-  "SQL Server": "bases_de_datos",
-  "Oracle": "bases_de_datos",
-  "MongoDB": "bases_de_datos",
-  "Redis": "bases_de_datos",
-  "Elasticsearch": "bases_de_datos",
-  // Mobile
-  "Flutter": "mobile",
-  "React Native": "mobile",
-  "Ionic": "mobile",
-  "iOS": "mobile",
-  "Swift": "mobile",
-  "Android": "mobile",
-  "Kotlin": "mobile",
-  // DevOps
-  "Linux": "devops",
-  "Docker": "devops",
-  "Kubernetes": "devops",
-  "Git": "devops",
-  "CI/CD": "devops",
-  "Jira": "devops",
-  // Cloud
-  "AWS": "cloud",
-  "Azure": "cloud",
-  "GCP": "cloud",
-  "Firebase": "cloud",
-  // Data
-  "Power BI": "data",
-  "Tableau": "data",
-  "Pandas": "data",
-  "ETL": "data",
-  // Arquitectura
-  "Microservicios": "arquitectura",
-};
+export default function Perfil() {
+  const [perfil, setPerfil] = useState<PerfilData | null>(null);
+  const [editing, setEditing] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
 
-export default async function Perfil() {
-  const perfil = await getPerfil();
+  useEffect(() => {
+    getPerfil().then((data) => {
+      if (!data) setError("No se pudo cargar el perfil.");
+      setPerfil(data);
+    });
+  }, []);
 
-  if (!perfil) {
+  const handleStartEdit = (nombre: string, score: number) => {
+    setEditing(nombre);
+    setEditValue(String(score));
+    setError("");
+  };
+
+  const handleCancel = () => {
+    setEditing(null);
+    setEditValue("");
+    setError("");
+  };
+
+  const handleSave = useCallback(async () => {
+    if (!perfil || !editing) return;
+
+    const newScore = parseFloat(editValue);
+    if (isNaN(newScore) || newScore < 0 || newScore > 1) {
+      setError("Ingresá un valor entre 0.00 y 1.00");
+      return;
+    }
+
+    setSaving(true);
+    setError("");
+
+    const result = await updatePerfil({ [editing]: newScore.toFixed(2) as unknown as number });
+    if (result) {
+      setPerfil((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          tecnico: { ...prev.tecnico, [editing]: newScore },
+        };
+      });
+    } else {
+      setError("Error al guardar. Reintentá.");
+    }
+    setSaving(false);
+    setEditing(null);
+  }, [perfil, editing, editValue]);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") handleSave();
+    if (e.key === "Escape") handleCancel();
+  };
+
+  if (error && !perfil) {
     return (
       <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-neutral-950">
         <div
@@ -110,7 +98,19 @@ export default async function Perfil() {
         <div className="relative z-10 mx-auto w-[98%] max-w-[1333px] min-h-screen rounded-3xl border border-white/5 bg-neutral-900">
           <div className="flex min-h-screen flex-col items-center justify-center px-6 py-8">
             <h1 className="hero-title text-center text-4xl md:text-5xl">Perfil</h1>
-            <p className="mt-6 text-sm text-neutral-400">No se pudo cargar el perfil.</p>
+            <p className="mt-6 text-sm text-neutral-400">{error}</p>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (!perfil) {
+    return (
+      <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-neutral-950">
+        <div className="relative z-10 mx-auto w-[98%] max-w-[1333px] min-h-screen rounded-3xl border border-white/5 bg-neutral-900">
+          <div className="flex min-h-screen flex-col items-center justify-center px-6 py-8">
+            <div className="h-6 w-48 animate-pulse rounded bg-neutral-800" />
           </div>
         </div>
       </main>
@@ -123,7 +123,7 @@ export default async function Perfil() {
   }
 
   for (const [nombre, score] of Object.entries(perfil.tecnico)) {
-    const cat = TECH_CATEGORY_MAP[nombre] ?? "otras";
+    const cat = perfil.categorias[nombre] ?? "otras";
     if (!grouped[cat]) grouped[cat] = [];
     grouped[cat].push([nombre, score]);
   }
@@ -131,6 +131,14 @@ export default async function Perfil() {
   for (const cat of Object.keys(grouped)) {
     grouped[cat].sort((a, b) => b[1] - a[1]);
   }
+
+  const calificadas = Object.values(perfil.tecnico).filter((s) => s > 0).length;
+  const promedio =
+    calificadas > 0
+      ? Object.values(perfil.tecnico)
+          .filter((s) => s > 0)
+          .reduce((a, b) => a + b, 0) / calificadas
+      : 0;
 
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-neutral-950">
@@ -154,10 +162,16 @@ export default async function Perfil() {
               <span className="mx-3 text-neutral-600">|</span>
               Nivel educativo {perfil.nivel_educativo.toFixed(2)}
               <span className="mx-3 text-neutral-600">|</span>
-              Calificadas {perfil.metricas.tecnologias_calificadas}/{perfil.metricas.total_tecnologias_db}
+              Calificadas {calificadas}/{perfil.metricas.total_tecnologias_db}
               <span className="mx-3 text-neutral-600">|</span>
-              Promedio {perfil.metricas.score_promedio.toFixed(2)}
+              Promedio {promedio.toFixed(2)}
             </p>
+
+            {error && (
+              <p className="text-sm text-red-400 bg-red-400/10 rounded-lg px-3 py-2 font-[var(--font-exo)]">
+                {error}
+              </p>
+            )}
 
             {[...CATEGORY_ORDER, "otras"].map((cat) => {
               const techs = grouped[cat];
@@ -173,9 +187,34 @@ export default async function Perfil() {
                     style={{ columns: "4 200px" }}
                   >
                     {techs.map(([nombre, score]) => (
-                      <div key={nombre} className="flex justify-between text-sm break-inside-avoid">
-                        <span className="text-neutral-300 font-[var(--font-exo)] truncate mr-2">{nombre}</span>
-                        <span className="text-amber-400 tabular-nums shrink-0">{score.toFixed(2)}</span>
+                      <div
+                        key={nombre}
+                        className="flex justify-between text-sm break-inside-avoid"
+                      >
+                        <span className="text-neutral-300 font-[var(--font-exo)] truncate mr-2">
+                          {nombre}
+                        </span>
+                        {editing === nombre ? (
+                          <input
+                            type="text"
+                            value={editValue}
+                            onChange={(e) => setEditValue(e.target.value)}
+                            onBlur={handleSave}
+                            onKeyDown={handleKeyDown}
+                            disabled={saving}
+                            autoFocus
+                            className="w-14 rounded bg-neutral-800 border border-amber-500/50 px-1 text-right text-amber-400 tabular-nums text-sm outline-none focus:border-amber-400"
+                          />
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => handleStartEdit(nombre, score)}
+                            className="text-amber-400 tabular-nums shrink-0 cursor-pointer hover:text-amber-300 transition-colors"
+                            title="Click para editar"
+                          >
+                            {score.toFixed(2)}
+                          </button>
+                        )}
                       </div>
                     ))}
                   </div>

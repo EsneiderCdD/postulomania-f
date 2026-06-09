@@ -253,6 +253,7 @@ export async function getTecnologias(): Promise<TecnologiaItem[]> {
 
 export type PerfilData = {
   tecnico: Record<string, number>;
+  categorias: Record<string, string>;
   idiomas: Record<string, number>;
   experiencia: number;
   nivel_educativo: number;
@@ -269,6 +270,20 @@ export async function getPerfil(): Promise<PerfilData | null> {
   const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
   const res = await fetch(`${baseUrl}/api/v1/perfil`);
   if (!res.ok) return null;
+  return res.json();
+}
+
+export async function updatePerfil(scores: Record<string, number>): Promise<{ message: string } | null> {
+  const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
+  const res = await fetch(`${baseUrl}/api/v1/perfil`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ scores }),
+  });
+  if (!res.ok) {
+    console.error(`[updatePerfil] HTTP ${res.status}`);
+    return null;
+  }
   return res.json();
 }
 
