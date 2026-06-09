@@ -63,7 +63,7 @@ const ITEMS = [
 
 export default function LeyendaMapa() {
   return (
-    <div className="flex flex-wrap items-center justify-center gap-3 px-4 py-3">
+    <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
       {ITEMS.map((item) => (
         <div
           key={item.label || "yo"}
