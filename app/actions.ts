@@ -251,9 +251,24 @@ export async function getTecnologias(): Promise<TecnologiaItem[]> {
   return data.tecnologias ?? [];
 }
 
+export async function createTecnologia(nombre: string, categoria: string): Promise<TecnologiaItem | null> {
+  const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
+  const res = await fetch(`${baseUrl}/api/v1/tecnologias`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ nombre, categoria }),
+  });
+  if (!res.ok) {
+    console.error(`[createTecnologia] HTTP ${res.status}`);
+    return null;
+  }
+  return res.json();
+}
+
 export type PerfilData = {
   tecnico: Record<string, number>;
   categorias: Record<string, string>;
+  perfil_tech_ids: Record<string, number | null>;
   idiomas: Record<string, number>;
   experiencia: number;
   nivel_educativo: number;
@@ -285,6 +300,18 @@ export async function updatePerfil(scores: Record<string, number>): Promise<{ me
     return null;
   }
   return res.json();
+}
+
+export async function deletePerfilTech(perfilTechId: number): Promise<boolean> {
+  const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
+  const res = await fetch(`${baseUrl}/api/v1/perfil/${perfilTechId}`, {
+    method: "DELETE",
+  });
+  if (!res.ok) {
+    console.error(`[deletePerfilTech] HTTP ${res.status}`);
+    return false;
+  }
+  return true;
 }
 
 export async function toggleSeguimiento(empresaId: number, enSeguimiento: boolean) {
