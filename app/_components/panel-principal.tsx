@@ -2,14 +2,14 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import type { MapaResponse } from "./mapa-ofertas";
-import TablaEmpresas from "./tabla-empresas";
 import OfertasTabla from "./ofertas-tabla";
 import ModalIngresarOferta from "./modal-ingresar-oferta";
 import ModalModificarOferta from "./modal-modificar-oferta";
 import type { OfertasPaginatedResponse } from "../actions";
-import { fetchOfertasPaginated } from "../actions";
+import { fetchOfertasPaginated, createEmpresa } from "../actions";
 
 type Oferta = {
   id: number;
@@ -47,15 +47,26 @@ export default function PanelPrincipal({
   mapa,
   ofertasInicial,
   postulaciones,
+  onSelectEmpresa,
 }: {
   mapa: MapaResponse;
   ofertasInicial: OfertasResponse;
   postulaciones: PostulacionItem[];
+  onSelectEmpresa?: (id: number) => void;
 }) {
   const router = useRouter();
-  const [focusEmpresaId, setFocusEmpresaId] = useState<number | null>(null);
   const [modalIngresarAbierto, setModalIngresarAbierto] = useState(false);
   const [modalModificarAbierto, setModalModificarAbierto] = useState(false);
+  const [modalNuevoPuntoAbierto, setModalNuevoPuntoAbierto] = useState(false);
+  const [nuevoPunto, setNuevoPunto] = useState({
+    nombre: "",
+    lat: "",
+    lng: "",
+    municipio: "",
+    direccion: "",
+    website: "",
+  });
+  const [creandoPunto, setCreandoPunto] = useState(false);
 
   const [ofertasData, setOfertasData] = useState<OfertasResponse>(ofertasInicial);
   const [orderBy, setOrderBy] = useState("fecha_extraccion");
@@ -105,18 +116,32 @@ export default function PanelPrincipal({
     mapa.empresas.filter((e) => e.en_seguimiento).map((e) => e.id)
   );
 
-  const handleSeguirEmpresa = useCallback((empresaId: number) => {
-    setFocusEmpresaId(empresaId);
-  }, []);
-
-  const handleFocusDone = useCallback(() => {
-    setFocusEmpresaId(null);
-  }, []);
-
   const handleOpenIngresar = useCallback(() => setModalIngresarAbierto(true), []);
   const handleCloseIngresar = useCallback(() => setModalIngresarAbierto(false), []);
   const handleOpenModificar = useCallback(() => setModalModificarAbierto(true), []);
   const handleCloseModificar = useCallback(() => setModalModificarAbierto(false), []);
+
+  const handleOpenNuevoPunto = useCallback(() => setModalNuevoPuntoAbierto(true), []);
+  const handleCloseNuevoPunto = useCallback(() => {
+    setModalNuevoPuntoAbierto(false);
+    setNuevoPunto({ nombre: "", lat: "", lng: "", municipio: "", direccion: "", website: "" });
+  }, []);
+
+  const handleCrearPunto = useCallback(async () => {
+    if (!nuevoPunto.nombre.trim() || creandoPunto) return;
+    setCreandoPunto(true);
+    await createEmpresa({
+      nombre: nuevoPunto.nombre.trim(),
+      lat: nuevoPunto.lat ? parseFloat(nuevoPunto.lat) : null,
+      lng: nuevoPunto.lng ? parseFloat(nuevoPunto.lng) : null,
+      municipio: nuevoPunto.municipio.trim() || null,
+      direccion: nuevoPunto.direccion.trim() || null,
+      website: nuevoPunto.website.trim() || null,
+    });
+    setCreandoPunto(false);
+    handleCloseNuevoPunto();
+    router.refresh();
+  }, [nuevoPunto, creandoPunto, router, handleCloseNuevoPunto]);
 
   return (
     <>
@@ -132,6 +157,12 @@ export default function PanelPrincipal({
           className="rounded-lg border border-amber-500/25 bg-neutral-900/80 px-3 py-2.5 text-sm font-medium text-amber-400/80 transition-colors hover:border-amber-500/50 hover:text-amber-300 hover:bg-neutral-800/80"
         >
           Modificar Oferta
+        </button>
+        <button
+          onClick={handleOpenNuevoPunto}
+          className="rounded-lg border border-amber-500/25 bg-neutral-900/80 px-3 py-2.5 text-sm font-medium text-amber-400/80 transition-colors hover:border-amber-500/50 hover:text-amber-300 hover:bg-neutral-800/80"
+        >
+          Nuevo punto
         </button>
         <Link
           href="/ofertas"
@@ -180,15 +211,122 @@ export default function PanelPrincipal({
         onClose={handleCloseModificar}
         onSuccess={handleSuccess}
       />
-      <TablaEmpresas
-        data={mapa}
-        focusEmpresaId={focusEmpresaId}
-        onFocusDone={handleFocusDone}
-      />
+      {modalNuevoPuntoAbierto &&
+        createPortal(
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <div
+              className="fixed inset-0 bg-black/70"
+              onClick={handleCloseNuevoPunto}
+            />
+            <div className="relative z-10 w-full max-w-sm rounded-xl border border-white/10 bg-neutral-950 p-6 shadow-2xl">
+              <h2 className="mb-5 text-sm font-medium text-white">
+                Nuevo punto
+              </h2>
+              <div className="space-y-3">
+                <input
+                  autoFocus
+                  type="text"
+                  placeholder="Nombre *"
+                  value={nuevoPunto.nombre}
+                  onChange={(e) =>
+                    setNuevoPunto((p) => ({ ...p, nombre: e.target.value }))
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") handleCrearPunto();
+                  }}
+                  className="w-full rounded-lg border border-white/10 bg-neutral-900 px-3 py-2 text-sm text-white placeholder-neutral-600 outline-none focus:border-amber-500/50"
+                />
+                <div className="flex gap-3">
+                  <input
+                    type="number"
+                    step="any"
+                    placeholder="Lat"
+                    value={nuevoPunto.lat}
+                    onChange={(e) =>
+                      setNuevoPunto((p) => ({ ...p, lat: e.target.value }))
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") handleCrearPunto();
+                    }}
+                    className="w-1/2 rounded-lg border border-white/10 bg-neutral-900 px-3 py-2 text-sm text-white placeholder-neutral-600 outline-none focus:border-amber-500/50"
+                  />
+                  <input
+                    type="number"
+                    step="any"
+                    placeholder="Lng"
+                    value={nuevoPunto.lng}
+                    onChange={(e) =>
+                      setNuevoPunto((p) => ({ ...p, lng: e.target.value }))
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") handleCrearPunto();
+                    }}
+                    className="w-1/2 rounded-lg border border-white/10 bg-neutral-900 px-3 py-2 text-sm text-white placeholder-neutral-600 outline-none focus:border-amber-500/50"
+                  />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Municipio"
+                  value={nuevoPunto.municipio}
+                  onChange={(e) =>
+                    setNuevoPunto((p) => ({ ...p, municipio: e.target.value }))
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") handleCrearPunto();
+                  }}
+                  className="w-full rounded-lg border border-white/10 bg-neutral-900 px-3 py-2 text-sm text-white placeholder-neutral-600 outline-none focus:border-amber-500/50"
+                />
+                <input
+                  type="text"
+                  placeholder="Dirección"
+                  value={nuevoPunto.direccion}
+                  onChange={(e) =>
+                    setNuevoPunto((p) => ({
+                      ...p,
+                      direccion: e.target.value,
+                    }))
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") handleCrearPunto();
+                  }}
+                  className="w-full rounded-lg border border-white/10 bg-neutral-900 px-3 py-2 text-sm text-white placeholder-neutral-600 outline-none focus:border-amber-500/50"
+                />
+                <input
+                  type="text"
+                  placeholder="Web"
+                  value={nuevoPunto.website}
+                  onChange={(e) =>
+                    setNuevoPunto((p) => ({ ...p, website: e.target.value }))
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") handleCrearPunto();
+                  }}
+                  className="w-full rounded-lg border border-white/10 bg-neutral-900 px-3 py-2 text-sm text-white placeholder-neutral-600 outline-none focus:border-amber-500/50"
+                />
+              </div>
+              <div className="mt-5 flex justify-end gap-3">
+                <button
+                  onClick={handleCloseNuevoPunto}
+                  className="rounded-lg border border-white/10 px-4 py-2 text-sm text-neutral-400 hover:border-white/30 hover:text-neutral-200 transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleCrearPunto}
+                  disabled={creandoPunto || !nuevoPunto.nombre.trim()}
+                  className="rounded-lg bg-amber-500/80 px-4 py-2 text-sm font-medium text-black hover:bg-amber-500 disabled:opacity-40 transition-colors"
+                >
+                  {creandoPunto ? "..." : "Crear"}
+                </button>
+              </div>
+            </div>
+          </div>,
+          document.getElementById("modal-root")!,
+        )}
       <OfertasTabla
         ofertas={ofertasData.ofertas}
         postulaciones={postulaciones}
-        onSeguirEmpresa={handleSeguirEmpresa}
+        onSeguirEmpresa={onSelectEmpresa}
         seguimientoIds={seguimientoIds}
         orderBy={orderBy}
         orderDir={orderDir}

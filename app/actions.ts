@@ -92,6 +92,31 @@ export async function updateEmpresa(id: number, fields: EmpresaFields) {
   return res.json();
 }
 
+export type CreateEmpresaFields = {
+  nombre: string;
+  lat?: number | null;
+  lng?: number | null;
+  direccion?: string | null;
+  website?: string | null;
+  municipio?: string | null;
+  departamento?: string | null;
+};
+
+export async function createEmpresa(fields: CreateEmpresaFields) {
+  const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
+  const res = await fetch(`${baseUrl}/api/v1/empresas`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(fields),
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    console.error(`[createEmpresa] HTTP ${res.status}: ${body}`);
+    return null;
+  }
+  return res.json();
+}
+
 export type OfertaFields = {
   id_oferta: string;
   origen_proceso: string;
