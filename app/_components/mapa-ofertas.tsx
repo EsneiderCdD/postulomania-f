@@ -252,14 +252,11 @@ function EmpresaPopup({ empresa }: { empresa: EmpresaMapa }) {
               value={editValue}
               onChange={(e) => {
                 e.stopPropagation();
-                setEditValue(e.target.value);
-              }}
-              onBlur={guardar}
-              onKeyDown={(e) => {
-                if (e.key === "Escape") {
-                  setEditando(null);
-                  setEditValue("");
-                }
+                const newValue = e.target.value;
+                setEditValue(newValue);
+                updateEmpresa(empresa.id, { estado_visual: newValue || null });
+                setEditando(null);
+                setEditValue("");
               }}
               onMouseDown={(e) => e.stopPropagation()}
               className="rounded border border-amber-500/50 bg-neutral-800 px-2 py-0.5 text-xs text-white outline-none"
