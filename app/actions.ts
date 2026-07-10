@@ -30,6 +30,19 @@ export async function updatePostulacion(id: number, estado_proceso: string) {
   return res.json();
 }
 
+export async function limpiarPostulaciones() {
+  const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
+  const res = await fetch(`${baseUrl}/api/v1/postulaciones/limpiar`, {
+    method: "DELETE",
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    console.error(`[limpiarPostulaciones] HTTP ${res.status}: ${body}`);
+    return null;
+  }
+  return res.json();
+}
+
 export async function deletePostulacion(id: number) {
   const baseUrl = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
   const res = await fetch(`${baseUrl}/api/v1/postulaciones/${id}`, {
